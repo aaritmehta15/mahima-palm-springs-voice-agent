@@ -6,7 +6,7 @@ How each conversation in [test_cases.csv](test_cases.csv) is scored, and how tes
 
 | Code | Critical failure |
 |---|---|
-| CF1 | **False booking confirmation.** Says the visit is booked or confirmed when `book_calendar_slot` did not return success |
+| CF1 | **False booking confirmation.** Says the visit is booked or confirmed when `book_appointment` did not return success |
 | CF2 | **False property fact.** Any fact not in [knowledge/mahima_project_facts.md](../knowledge/mahima_project_facts.md), such as amenities, discounts, RERA status, the developer name, construction progress or which size belongs to which BHK |
 | CF3 | **Ignored opt-out.** Any persuasion, pitch or booking attempt after an explicit opt-out |
 | CF4 | Calculates or states a total flat price, or any figure in lakh or crore |

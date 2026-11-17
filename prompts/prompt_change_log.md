@@ -2,6 +2,18 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.7: Real tool names and parameters (2026-11-17)
+
+Trigger: raw execution JSON for `ec16fc4c…` showed **"No tools invoked"** and `tool_call_logs: []`, yet the agent had said "no slot khaali hai" for Saturday, "11 baje available hai" for Monday, and "email confirm nahi ho payi". **All three were invented.** Pre-tool messages did play, so tool calls were attempted but most likely failed on wrong parameters.
+
+| Finding (from `api_tools` in the execution JSON) | Change |
+|---|---|
+| Real names are `check_availability_of_slots_7950914` and `book_appointment_7950914`; the booking Task Name `book_calendar_slot` was ignored | All references renamed to `book_appointment`; the prompt notes that names may carry a numeric suffix |
+| The availability tool takes `start` and `end` (the template appends `+05:30`), not `preferred_date` | S6 rules spell out `start YYYY-MM-DDT00:00:00`, `end YYYY-MM-DDT23:59:00` |
+| The booking tool takes `preferred_date`, `preferred_time` (HH:MM), `name`, `email` | S6 rules spell out the exact parameter formats; the slot is kept as the tool's date and time |
+| The model turned a tool error into "no slots" | Rule: a tool error is not "no slots"; retry once, then Branch C |
+| The model may say the waiting line itself | Rule: never speak a waiting line; Bolna plays it automatically |
+
 ## v0.6: Fixes from Round 3 attempt 1 (2026-11-17)
 
 Trigger: execution `ec16fc4c…` (see [tests/test_results.md](../tests/test_results.md), D7 to D10).
@@ -25,7 +37,7 @@ Trigger: Round 2 live call, execution `6d1ec…` (see [tests/test_results.md](..
 
 ## v0.4.1: Tool name matches Bolna (2026-11-17)
 
-**Trigger:** Bolna's built-in Cal.com availability tool has a fixed function name, `check_availability_of_slots`, with no rename field. The booking tool's Task Name was set to `book_calendar_slot`.
+**Trigger:** Bolna's built-in Cal.com availability tool has a fixed function name, `check_availability_of_slots`, with no rename field. The booking tool's Task Name was set to `book_calendar_slot` (later found to be ignored by Bolna; see v0.7).
 **Change:** every `fetch_calendar_slots` in the prompt and docs was renamed to `check_availability_of_slots`. A mismatch could stop the model from calling the availability tool.
 
 ## v0.4: Compaction to fit Bolna (2026-11-17)
@@ -66,7 +78,7 @@ See [tests/test_results.md](../tests/test_results.md), defects D1 to D3: FAQ unk
 | Responses conversational rather than robotic | ✅ static; ⏳ by ear | Two sentences or fewer per turn; one acknowledgement maximum; needs a Round 2 live check |
 | Customer objections handled gracefully | ✅ | Six objections, one pivot each, close after two declines |
 | The agent can skip irrelevant questions | ✅ | Pitch Routing block; S5 Q5 skipped if a visit was already asked for |
-| Booking requires successful tool execution | ✅ | `confirmed` only on `book_calendar_slot` success; S7 A used only when confirmed |
+| Booking requires successful tool execution | ✅ | `confirmed` only on `book_appointment` success; S7 A used only when confirmed |
 | The agent can recover from tool failure | ✅ | S6 Branch C, one retry maximum, ends `pending_confirmation` |
 | Refusal and opt-out are respected | ✅ | S4 Branch D, a single probe; opt-out handler is immediate |
 | The call can end without forcing a site visit | ✅ | S7 B, C, D, E, F and G |
@@ -79,7 +91,7 @@ Found by manual review of v0.1 against the Bolna Cal.com tool contract and Bolna
 
 | # | Issue in v0.1 | Risk | Change in v0.2 |
 |---|---|---|---|
-| 1 | `[selected_slot]` was only described in spoken form, but `book_calendar_slot` needs the exact ISO 8601 start time | The model could pass "subah gyarah baje" or a rebuilt time, and the booking would fail or land on the wrong slot | `# Context Variables` now requires each slot to be kept in two forms: the ISO value from the tool (passed to booking) and Hindi time words (spoken) |
+| 1 | `[selected_slot]` was only described in spoken form, but `book_appointment` needs the exact ISO 8601 start time | The model could pass "subah gyarah baje" or a rebuilt time, and the booking would fail or land on the wrong slot | `# Context Variables` now requires each slot to be kept in two forms: the ISO value from the tool (passed to booking) and Hindi time words (spoken) |
 | 2 | No explicit end-of-call rule | The agent may keep talking after a closing, or loop on "thank you"/"bye" | Added `# Ending the Call` to Section 2; enabled LLM-based hangup in [bolna_setup.md](../configuration/bolna_setup.md) |
 | 3 | Abuse handler continued into the Section 7 Branch E closing ("... Mahima Palm Springs zaroor yaad rakhiyega") | A cheerful sales close after abuse sounds tone-deaf | The abuse line is now itself the closing; the call ends immediately |
 

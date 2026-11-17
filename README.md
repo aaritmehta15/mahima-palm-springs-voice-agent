@@ -29,7 +29,7 @@ flowchart LR
     end
     Bolna <-->|phone call| Customer
     LLM -->|check_availability_of_slots| Cal["Cal.com<br/>demo event type"]
-    LLM -->|book_calendar_slot| Cal
+    LLM -->|book_appointment| Cal
     Bolna -->|execution_id| Exec["Execution:<br/>transcript, recording,<br/>extracted_data"]
 ```
 

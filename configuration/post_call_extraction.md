@@ -30,7 +30,7 @@ Question: `What is the status of the site visit?`
 |---|---|
 | `not_requested` | No visit was requested, or the customer declined a visit |
 | `pending_confirmation` | The customer wanted a visit or gave a preferred date or time, but the booking tool did not return a successful booking |
-| `confirmed` | **Only** if `book_calendar_slot` returned a successful booking in the transcript or tool log |
+| `confirmed` | **Only** if `book_appointment` returned a successful booking in the transcript or tool log |
 
 ### 3. Preferred Visit Time (free text)
 Question: `What date and time did the customer ask for or agree to for the site visit, as they said it? If confirmed, give the booked slot in ISO 8601 with a +05:30 offset. Otherwise answer none.`

@@ -44,8 +44,8 @@ flowchart TD
     V2 --> V3["S6 Q3 Read back slot, confirm"]
     V3 --> V4["S6 Q4 Confirm email from lead form"]
     V4 -->|Email missing or different| VD["S6 Branch D<br/>Collect + spell back, max 2"]
-    V4 -->|book_calendar_slot success| C_BOOK["S7 Branch A<br/>Booked close"]
-    VD -->|book_calendar_slot success| C_BOOK
+    V4 -->|book_appointment success| C_BOOK["S7 Branch A<br/>Booked close"]
+    VD -->|book_appointment success| C_BOOK
     VD -->|Unclear twice| C_PEND
     V4 -->|Slot taken| VB["S6 Branch B<br/>Re-fetch slots"]
     VB --> V2
@@ -74,13 +74,13 @@ The prompt tracks `[visit_status]` so the agent never claims a booking that did 
 |---|---|---|---|
 | `not_requested` | Start of call; also if the customer declines a visit | No visit language | Any except A and B |
 | `pending_confirmation` | Customer wants a visit or gave a preferred date or time, but no successful booking yet (includes no slots, slot taken, tool error, email not captured) | "Noted, our team will call to confirm." Never "booked" | S7 Branch B |
-| `confirmed` | **Only** when `book_calendar_slot` returns success in this call | "Your site visit is booked" | S7 Branch A |
+| `confirmed` | **Only** when `book_appointment` returns success in this call | "Your site visit is booked" | S7 Branch A |
 
 ```mermaid
 stateDiagram-v2
     [*] --> not_requested: call starts
     not_requested --> pending_confirmation: wants a visit / gives preferred time
-    pending_confirmation --> confirmed: book_calendar_slot success
+    pending_confirmation --> confirmed: book_appointment success
     pending_confirmation --> pending_confirmation: no slots / slot taken / email unclear / tool error
     not_requested --> [*]: declines or call ends
     pending_confirmation --> [*]: S7 Branch B (pending close)
@@ -92,7 +92,7 @@ stateDiagram-v2
 | Tool | Call only when | Never call when |
 |---|---|---|
 | `check_availability_of_slots(preferred_date)` | Customer agreed to a visit **and** gave a resolvable date (relative dates are resolved against `{current_date}`) | Before interest is established, or with a past date |
-| `book_calendar_slot(slot, name, email)` | Slot came from the **latest** fetch result, was read back and confirmed **and** name and email are confirmed | The slot was guessed or typed by the customer outside the returned list, or the email is unconfirmed |
+| `book_appointment(slot, name, email)` | Slot came from the **latest** fetch result, was read back and confirmed **and** name and email are confirmed | The slot was guessed or typed by the customer outside the returned list, or the email is unconfirmed |
 
 Each tool is retried at most once, with no loops. If it fails twice, the agent uses S6 Branch C and the visit stays `pending_confirmation`.
 
@@ -208,4 +208,4 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 | 18 | Customer | Haan. |
 | 19 | Neha | Booking ki confirmation email par bhejoongi... (email read back) |
 | 20 | Customer | Haan, sahi hai. |
-| 21 | Neha | *(book_calendar_slot → success)* Aapka site visit Sunday ko subah gyarah baje ke liye book ho gaya hai... |
+| 21 | Neha | *(book_appointment → success)* Aapka site visit Sunday ko subah gyarah baje ke liye book ho gaya hai... |

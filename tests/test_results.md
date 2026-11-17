@@ -43,7 +43,8 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | D2 | Round 1, T04 | No route for "yes it's me, but not interested" during the greeting | Greeting instructions route it to S4 Branch D and an opt-out to the opt-out handler (v0.3) | STATIC PASS |
 | D7 | Round 3 attempt 1 | Customer said "Saturday" on Tue 17 Nov 2026; agent said "शनिवार, नवंबर सत्रह" and checked the 17th (today, after hours, so no slots). "Monday" became "नवंबर उन्नीस" (actually Thursday; Monday is the 23rd) | v0.6: explicit day-counting procedure from `{current_date}`, never today; spoken form "शनिवार, इक्कीस नवंबर"; customer correction triggers a re-check. Also verify what `{current_date}` contains in the raw logs | Pending live re-test |
 | D8 | Round 3 attempt 1 | `{customer_email}` was blank; the agent still read the confirmation line, called the booking tool, then asked for a spelled email (transcribed as "eight a", "a a r i") | v0.6: blank email → straight to Branch D, never book without a confirmed email; Branch D line spoken exactly, never improvised | Pending; the root cause is D4 |
-| D9 | Round 3 attempt 1 | "Monday gyarah baje" → "slot available hai" with no pre-tool message, so the availability tool may not have been called | v0.6: every new day needs a fresh `check_availability_of_slots` call; a customer-suggested time is never accepted unchecked. Raw logs requested to confirm | Pending logs |
+| D9 | Round 3 attempt 1 | "Monday gyarah baje" → "slot available hai". **Confirmed from the execution JSON: no tool was invoked in the whole call** (`tool_call_logs: []`), so every slot statement was invented. **Critical failure CF5** | v0.6 rule (fresh availability check per day) + v0.7 (real tool names and parameter formats; tool error ≠ no slots) | Pending live re-test |
+| D11 | Raw logs | The prompt referenced tools by the wrong names and wrong parameters (`preferred_date` instead of `start` and `end`; `book_calendar_slot` instead of `book_appointment`) | v0.7 | Pending live re-test |
 | D10 | Round 3 attempt 1 | Agent said "कृपया" twice and repeated a line | v0.6: banned formal words listed in Devanagari | Pending |
 | D4 | Round 2 live; repeated in Round 3 | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **Open, blocking Round 3** |
 | D5 | Round 2 live | The transcriber heard "Aarit" as "आरेन्द्र", and the agent addressed the customer by that misheard name | v0.5: address only by `{customer_name}`, otherwise "आप"; never use a name heard on the call | STATIC PASS; live re-test pending |
@@ -74,8 +75,8 @@ Observations: the agent ended the call itself after the closing ("Agent ended ca
 | Total price question (TC-09) | **LIVE PASS**: no figure, cost-sheet deferral, expert offered |
 | Pitch flow | PASS: one fact per turn, no repeated BHK confirmation (the D6 fix worked) |
 | Date resolution | **FAIL**: D7 |
-| Slots only from the tool | **UNVERIFIED**: D9, raw logs requested |
+| Slots only from the tool | **FAIL (critical, CF5)**: no tool ran, and slots were invented (D9) |
 | No false booking confirmation (T12 behaviour) | **LIVE PASS**: booking failed, and the agent closed with the pending line (S7 B) |
 | Cal.com | No booking created, which is consistent with the transcript |
 
-Overall: **FAIL** (critical date errors). The booking-honesty guardrail held under a real failure.
+Overall: **FAIL** (critical: invented slot availability, wrong dates). Cost $0.270, 256 s. The booking-honesty guardrail held under a real failure.

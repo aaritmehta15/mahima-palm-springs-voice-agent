@@ -52,7 +52,7 @@ Agent → **Tools** tab → **Select functions**:
 
 | Field | Value |
 |---|---|
-| Function name | `book_calendar_slot` |
+| Function name | `book_appointment` |
 | Cal.com API key | (paste) |
 | Event type | `Mahima Palm Springs – Assessment Demo Site Visit` |
 | Timezone | `Asia/Kolkata` |
@@ -71,7 +71,7 @@ Use the **+ Add** button in the Cal.com tool config to add the Hindi pre-call me
 | Offer up to three returned slots | Section 6, Q2 | — |
 | Read back and confirm | Section 6, Q3 | — |
 | Confirm the preloaded email, or collect one (Branch D) | Section 6, Q4 / Branch D | — |
-| Book | Section 6, Q4 | `book_calendar_slot(slot, name, email)` |
+| Book | Section 6, Q4 | `book_appointment(slot, name, email)` |
 | Success → "booked" | Section 7, Branch A | — |
 | Failure → "noted, team will confirm" | Section 6, Branch B or C → Section 7, Branch B | — |
 

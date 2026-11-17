@@ -65,7 +65,7 @@ Preview the voice with this line before choosing:
 
 Add both built-in Cal.com functions, configured as in [booking_setup.md](booking_setup.md):
 1. **Check slot availability (using Cal.com)**. The function name must be `check_availability_of_slots`.
-2. **Book appointment (using Cal.com)**. The function name must be `book_calendar_slot`.
+2. **Book appointment (using Cal.com)**. The function name must be `book_appointment`.
 
 If the dashboard assigns fixed names that cannot be changed, update the two names in the prompt's Section 6 to match, and log the change.
 
