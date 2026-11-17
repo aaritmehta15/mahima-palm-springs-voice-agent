@@ -2,6 +2,19 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.4: Compaction to fit Bolna (2026-11-17)
+
+**Trigger:** pasting v0.3 into the Bolna prompt canvas showed "This draft is too large to save. Shorten the prompt to keep autosaving." (11,957 tokens). A shorter prompt also lowers per-turn LLM latency on live calls.
+
+| Change | Effect |
+|---|---|
+| The two Bolna static modules (Naturalization, Pronunciation) replaced by short `# Speaking Style` and `# Pronunciation` rules with the same intent | About 5,500 characters saved |
+| The standard closing boilerplate repeated in seven Section 7 branches replaced by "Speak it as written, then end the call" | About 3,500 characters saved |
+| Instructions rewritten as short imperatives with the same routing; Section 4 Branch A merged into the busy handler, which did the same thing | Same logic, fewer words |
+| FAQs moved from YAML to `FAQ n:` + `Agent:` + `Instructions:`; the "are you AI" FAQ removed because the handler covers it | Every FAQ answer now has its own Instructions line |
+
+**Result:** 25,213 characters (was 53,227). 54 of 54 Agent lines are followed by Instructions; no spoken-line violations; same three states; all facts unchanged; Sections 1 to 9 present. Round 1 static traces for T01–T15 still hold, because no routing changed. Waiting for the Bolna save to confirm it now fits.
+
 ## v0.3: Plan alignment + Round 1 static fixes (static-checked, not yet live-tested)
 
 ### Design changes

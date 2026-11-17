@@ -11,8 +11,8 @@ Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on
 | 1 | Complete working outbound agent | ⏳ | Configure per [configuration/bolna_setup.md](configuration/bolna_setup.md) |
 | 2 | All five required call-flow sections | ✅ | [prompts/system_prompt.md](prompts/system_prompt.md) Sections 3 to 7 |
 | 3 | AI Agent Background, Global Rules, Guardrails and FAQs | ✅ | Sections 1, 2, 8 and 9 |
-| 4 | Instructions after every Agent dialogue | ✅ | 40 of 40 (lint) |
-| 5 | All spoken lines in natural Hinglish | ✅ static; ⏳ confirm by ear in Round 2 | Lint: 56 spoken lines, no formal Hindi |
+| 4 | Instructions after every Agent dialogue | ✅ | 54 of 54 (lint, v0.4) |
+| 5 | All spoken lines in natural Hinglish | ✅ static; ⏳ confirm by ear in Round 2 | Lint: 54 spoken lines, no formal Hindi |
 
 ## 2. Working integrations
 
