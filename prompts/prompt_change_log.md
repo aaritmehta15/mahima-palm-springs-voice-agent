@@ -2,6 +2,16 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.5: Fixes from the first live call (2026-11-17)
+
+Trigger: Round 2 live call, execution `6d1ec…` (see [tests/test_results.md](../tests/test_results.md), D4 to D6).
+
+| Defect | Observed | Change |
+|---|---|---|
+| D5 | Transcriber heard "Aarit" as "आरेन्द्र"; the agent then called the customer "आरेन्द्र जी" | `# Identity`: address by `{customer_name}` only when filled, otherwise "आप"; never use a name heard on the call |
+| D6 | Asked "teen BHK, rate kya hai?", got a 4-sentence answer that also re-confirmed the BHK | `# Speaking Style`: answer only what was asked; Pitch Routing: one-sentence answers, never re-confirm; S5 Q1: a BHK mentioned with a question is stored silently |
+| D4 | Blank name in the welcome message | Configuration, not prompt: set default variable values in Bolna for dashboard test calls |
+
 ## v0.4.1: Tool name matches Bolna (2026-11-17)
 
 **Trigger:** Bolna's built-in Cal.com availability tool has a fixed function name, `check_availability_of_slots`, with no rename field. The booking tool's Task Name was set to `book_calendar_slot`.
