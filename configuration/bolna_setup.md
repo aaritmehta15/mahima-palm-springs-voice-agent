@@ -78,7 +78,7 @@ If the dashboard assigns fixed names that cannot be changed, update the two name
 | `hangup_after_silence` | `20` s | Indian callers often pause to think |
 | `trigger_user_online_message_after` | `10` s | Must be less than `hangup_after_silence` |
 | `check_user_online_message` | `Hello, क्या आप मुझे सुन पा रहे हैं?` | Same line as the prompt's silence handler, so the wording stays consistent |
-| `call_terminate` (max duration) | `300` s (5 min) | Enough for pitch plus booking, and protects the $5 test budget |
+| `call_terminate` (max duration) | `420` s (7 min) | A booking call took about 5 min in testing; 7 min leaves a buffer and still protects the budget |
 | Retries | **Disabled** during testing | Avoids surprise repeat calls that use credit |
 | Concurrency | One call at a time | Testing only |
 | `call_hangup_message` | leave empty | The closing lines in Section 7 already end the call |

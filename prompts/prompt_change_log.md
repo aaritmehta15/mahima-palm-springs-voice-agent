@@ -2,6 +2,16 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.8: Fixes from the first real booking (2026-11-17)
+
+Trigger: execution `9a476680…` created a real Cal.com booking (Round 3 attempt 2). See D12 and D13 in [tests/test_results.md](../tests/test_results.md).
+
+| Defect | Change |
+|---|---|
+| D12 blank name misrouted to Branch B | Greeting: a blank `{customer_name}` means treat the answerer as the customer |
+| D13 rejected a time that was probably available | S6 Q2: keep the full slot list; reject only if the time is missing from it |
+| D4 variables blank on dashboard tests | Process: the final call goes through `POST /call` with `user_data` (customer_name, customer_email, timezone), the same path a production lead integration would use |
+
 ## v0.7: Real tool names and parameters (2026-11-17)
 
 Trigger: raw execution JSON for `ec16fc4c…` showed **"No tools invoked"** and `tool_call_logs: []`, yet the agent had said "no slot khaali hai" for Saturday, "11 baje available hai" for Monday, and "email confirm nahi ho payi". **All three were invented.** Pre-tool messages did play, so tool calls were attempted but most likely failed on wrong parameters.

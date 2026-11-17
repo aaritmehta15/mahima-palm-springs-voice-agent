@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 2 (Round 2; Round 3 attempt 1).
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 3 (Round 2; Round 3 attempts 1 and 2).
 
 ## 1. Run summary
 
@@ -12,7 +12,8 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | 1. Static re-check | v0.3 (after fixes) | 2026-11-17 | T04, T08, T09 | 3 STATIC PASS |
 | 2. Voice check | v0.4.1 | 2026-11-17 | 1 live call (119 s, $0.120), execution `6d1ec…` | **LIVE PASS, 89 of 100**, no critical failure; 3 defects (D4–D6) fixed in v0.5 |
 | 3. Booking end to end, attempt 1 | v0.5 | 2026-11-17 | 1 live call, execution `ec16fc4c…` | **LIVE FAIL**: wrong dates (D7), possible unverified slot (D9, logs pending), blank variables (D4); booking honesty held: no false confirmation, closed as pending. Not usable as the submission recording |
-| 3. Booking end to end, attempt 2 | v0.6 | — | — | NOT RUN |
+| 3. Booking end to end, attempt 2 | v0.7 | 2026-11-17 | 1 live call, execution `9a476680…`, 300 s, $0.300 | **LIVE PASS, 86 of 100, real booking created** (Cal.com: Confirmed, Sat 21 Nov 10:00 to 10:30 IST). Slots offered (9:00, 9:30, 10:00) matched real Cal.com availability; the slot was read back; "book ho gaya" was said only after the booking succeeded. Defects D4 (blank variables again), D12, D13; the email was captured by voice and misheard |
+| 3. Booking end to end, attempt 3 (API call with user_data) | v0.8 | — | — | NOT RUN |
 | 4. Regression | — | — | Critical cases after fixes | NOT RUN |
 
 ## 2. Core scenarios (T01–T15)
@@ -46,7 +47,9 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | D9 | Round 3 attempt 1 | "Monday gyarah baje" → "slot available hai". **Confirmed from the execution JSON: no tool was invoked in the whole call** (`tool_call_logs: []`), so every slot statement was invented. **Critical failure CF5** | v0.6 rule (fresh availability check per day) + v0.7 (real tool names and parameter formats; tool error ≠ no slots) | Pending live re-test |
 | D11 | Raw logs | The prompt referenced tools by the wrong names and wrong parameters (`preferred_date` instead of `start` and `end`; `book_calendar_slot` instead of `book_appointment`) | v0.7 | Pending live re-test |
 | D10 | Round 3 attempt 1 | Agent said "कृपया" twice and repeated a line | v0.6: banned formal words listed in Devanagari | Pending |
-| D4 | Round 2 live; repeated in Round 3 | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **Open, blocking Round 3** |
+| D12 | Round 3 attempt 2 | With `customer_name` blank, the answer "main Aarisht bol raha hoon" was routed to S4 Branch B (someone else answered) | v0.8: if `{customer_name}` is blank, treat the answerer as the customer; never route to Branch B because of a heard name | STATIC PASS |
+| D13 | Round 3 attempt 2 | The customer asked for 11:00; the agent said it was not available after offering only 9:00, 9:30 and 10:00 (11:00 was very likely in the full tool result) | v0.8: keep the full slot list; reject a time only if it is missing from the full result | Pending live re-test |
+| D4 | Round 2 live; repeated in Round 3 attempts 1 and 2 (dashboard test calls ignore Variables defaults) | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **Open, blocking Round 3** |
 | D5 | Round 2 live | The transcriber heard "Aarit" as "आरेन्द्र", and the agent addressed the customer by that misheard name | v0.5: address only by `{customer_name}`, otherwise "आप"; never use a name heard on the call | STATIC PASS; live re-test pending |
 | D6 | Round 2 live | "Teen BHK, rate kya hai?" got rate + sizes + floor plan + "teen BHK, sahi hai?" (4 sentences, re-confirmation) | v0.5: answer only what was asked, in one sentence; never re-confirm what the customer said | STATIC PASS; live re-test pending |
 | D3 | Round 1, T05 | The S4 Q1 instruction said a permission check happens at S5 Q1, but S5 Q1 has no permission check | The question is now treated as permission, and the call follows Pitch Routing (v0.3) | STATIC PASS |
@@ -80,3 +83,18 @@ Observations: the agent ended the call itself after the closing ("Agent ended ca
 | Cal.com | No booking created, which is consistent with the transcript |
 
 Overall: **FAIL** (critical: invented slot availability, wrong dates). Cost $0.270, 256 s. The booking-honesty guardrail held under a real failure.
+
+## 7. Round 3 attempt 2 notes (execution `9a476680…`, prompt v0.7)
+
+| Check | Result |
+|---|---|
+| Real availability (T10) | **LIVE PASS**: the three slots offered match Cal.com availability from 9:00 |
+| Read-back before booking | **LIVE PASS** |
+| Real booking created | **LIVE PASS**: Cal.com shows the booking Confirmed, Sat 21 Nov 2026, 10:00 to 10:30 IST |
+| No false confirmation | **LIVE PASS**: "book ho gaya" only after the booking tool returned |
+| Unavailable slot (T11) | **PARTIAL**: D13 |
+| Email | Blank preload (D4) → the agent correctly used Branch D, but voice spelling produced a wrong attendee email. This supports the design decision to preload the email from the lead form |
+| Call ending | Reached the 300 s cap (`max_duration_reached`) because email spelling took about 90 s; the user-online check fired after the closing |
+| Bolna "Function tools" panel | Showed "No tools invoked" and `tool_call_logs: []` despite a real booking. That panel is not reliable evidence; the Cal.com booking is the evidence |
+
+Score: Factual 100, Flow 75, Hinglish 90, Tools 85, Naturalness 75 → **86.25, PASS**, zero critical failures.
