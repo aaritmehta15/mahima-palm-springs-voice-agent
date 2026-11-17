@@ -28,7 +28,7 @@ flowchart LR
         STT["Deepgram nova-3<br/>multi-hi"] --> LLM["gpt-4.1-mini<br/>system_prompt.md"] --> TTS["Sarvam<br/>female Hindi voice"]
     end
     Bolna <-->|phone call| Customer
-    LLM -->|fetch_calendar_slots| Cal["Cal.com<br/>demo event type"]
+    LLM -->|check_availability_of_slots| Cal["Cal.com<br/>demo event type"]
     LLM -->|book_calendar_slot| Cal
     Bolna -->|execution_id| Exec["Execution:<br/>transcript, recording,<br/>extracted_data"]
 ```

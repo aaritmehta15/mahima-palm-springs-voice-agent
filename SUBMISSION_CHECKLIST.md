@@ -20,7 +20,7 @@ Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on
 |---|---|---|---|
 | 6 | Bolna agent configured and tested | ⏳ | Screenshots in [evidence/screenshots/](evidence/screenshots/) |
 | 7 | Verified-number outbound test completed | ⏳ | Round 2 execution ID in [tests/test_results.md](tests/test_results.md) |
-| 8 | Cal.com availability tool works | ⏳ | Raw log shows a `fetch_calendar_slots` result |
+| 8 | Cal.com availability tool works | ⏳ | Raw log shows a `check_availability_of_slots` result |
 | 9 | Cal.com booking tool actually creates a booking | ⏳ | Booking visible in Cal.com (screenshot) |
 | 10 | No false confirmation when booking fails | ✅ static; ⏳ live (optional) | T12 Round 1 trace; optional live test on an agent copy with a broken key |
 

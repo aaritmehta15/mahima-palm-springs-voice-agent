@@ -40,7 +40,7 @@ Agent → **Tools** tab → **Select functions**:
 
 | Field | Value |
 |---|---|
-| Function name | `fetch_calendar_slots` |
+| Function name | `check_availability_of_slots` |
 | Cal.com API key | (paste) |
 | Event type | `Mahima Palm Springs – Assessment Demo Site Visit` |
 | Timezone | `Asia/Kolkata` (must match the event) |
@@ -56,7 +56,7 @@ Agent → **Tools** tab → **Select functions**:
 | Cal.com API key | (paste) |
 | Event type | `Mahima Palm Springs – Assessment Demo Site Visit` |
 | Timezone | `Asia/Kolkata` |
-| Description | `Book a site visit slot only after the customer chose a slot returned by fetch_calendar_slots, the slot was read back and confirmed, and the customer's name and email are confirmed. Never book a time that was not returned by fetch_calendar_slots.` |
+| Description | `Book a site visit slot only after the customer chose a slot returned by check_availability_of_slots, the slot was read back and confirmed, and the customer's name and email are confirmed. Never book a time that was not returned by check_availability_of_slots.` |
 | Pre-call message (Hindi) | `ठीक है, मैं आपका slot book कर रही हूँ, बस एक second।` |
 | Pre-call message (English) | `Booking that for you now, one moment.` |
 
@@ -67,7 +67,7 @@ Use the **+ Add** button in the Cal.com tool config to add the Hindi pre-call me
 | Step | Prompt location | Tool |
 |---|---|---|
 | Customer agrees to a visit → ask date | Section 6, Q1 | — |
-| Date captured | Section 6, Q1 | `fetch_calendar_slots(preferred_date)` |
+| Date captured | Section 6, Q1 | `check_availability_of_slots(preferred_date)` |
 | Offer up to three returned slots | Section 6, Q2 | — |
 | Read back and confirm | Section 6, Q3 | — |
 | Confirm the preloaded email, or collect one (Branch D) | Section 6, Q4 / Branch D | — |
@@ -91,7 +91,7 @@ Use the **+ Add** button in the Cal.com tool config to add the Hindi pre-call me
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Spoken times are off by hours | Timezone mismatch | Set `Asia/Kolkata` in both Cal.com and Bolna |
-| `fetch_calendar_slots` returns nothing | Event paused or no availability window | Check the event in Cal.com |
+| `check_availability_of_slots` returns nothing | Event paused or no availability window | Check the event in Cal.com |
 | Cal.com shows the booking but the agent said it failed | Tool timed out | Check raw logs; lengthen the pre-call message. The prompt already falls back to "pending" safely |
 | Booking fails with a missing field | Required custom booking question | Remove the extra required questions from the event |
 | Wrong email booked | Email misheard | The prompt reads it back letter by letter (Branch D); use the preloaded email where possible |

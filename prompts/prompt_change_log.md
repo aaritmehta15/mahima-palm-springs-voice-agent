@@ -2,6 +2,11 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.4.1: Tool name matches Bolna (2026-11-17)
+
+**Trigger:** Bolna's built-in Cal.com availability tool has a fixed function name, `check_availability_of_slots`, with no rename field. The booking tool's Task Name was set to `book_calendar_slot`.
+**Change:** every `fetch_calendar_slots` in the prompt and docs was renamed to `check_availability_of_slots`. A mismatch could stop the model from calling the availability tool.
+
 ## v0.4: Compaction to fit Bolna (2026-11-17)
 
 **Trigger:** pasting v0.3 into the Bolna prompt canvas showed "This draft is too large to save. Shorten the prompt to keep autosaving." (11,957 tokens). A shorter prompt also lowers per-turn LLM latency on live calls.

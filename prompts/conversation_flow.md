@@ -37,7 +37,7 @@ flowchart TD
     P5 -->|Yes| V1["S6 Q1 Preferred date"]
     P5 -->|No| C_NI
 
-    V1 -->|fetch_calendar_slots| V2["S6 Q2 Offer up to 3 returned slots"]
+    V1 -->|check_availability_of_slots| V2["S6 Q2 Offer up to 3 returned slots"]
     V1 -->|No slots| VA["S6 Branch A<br/>Try another date, max 2"]
     VA -->|Slots found| V2
     VA -->|Still none| C_PEND["S7 Branch B<br/>Pending confirmation close"]
@@ -91,7 +91,7 @@ stateDiagram-v2
 
 | Tool | Call only when | Never call when |
 |---|---|---|
-| `fetch_calendar_slots(preferred_date)` | Customer agreed to a visit **and** gave a resolvable date (relative dates are resolved against `{current_date}`) | Before interest is established, or with a past date |
+| `check_availability_of_slots(preferred_date)` | Customer agreed to a visit **and** gave a resolvable date (relative dates are resolved against `{current_date}`) | Before interest is established, or with a past date |
 | `book_calendar_slot(slot, name, email)` | Slot came from the **latest** fetch result, was read back and confirmed **and** name and email are confirmed | The slot was guessed or typed by the customer outside the returned list, or the email is unconfirmed |
 
 Each tool is retried at most once, with no loops. If it fails twice, the agent uses S6 Branch C and the visit stays `pending_confirmation`.
@@ -202,7 +202,7 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 | 12 | Customer | Haan, chalega. |
 | 13 | Neha | Flat ki asli feel to site par aakar hi aati hai. Kya aap family ke saath ek site visit karna chahenge? |
 | 14 | Customer | Haan, Sunday ko. |
-| 15 | Neha | *(fetch_calendar_slots)* Sunday ko subah gyarah baje, dopahar do baje aur shaam chaar baje ke slots available hain... |
+| 15 | Neha | *(check_availability_of_slots)* Sunday ko subah gyarah baje, dopahar do baje aur shaam chaar baje ke slots available hain... |
 | 16 | Customer | Gyarah baje. |
 | 17 | Neha | To main Sunday ko subah gyarah baje ka slot aapke liye book kar doon? |
 | 18 | Customer | Haan. |
