@@ -8,9 +8,11 @@ Built on **Bolna** with no custom code. This repository is the submission packag
 
 | What | Where |
 |---|---|
+| **Design choices, prompt style and learnings** | [DESIGN_AND_LEARNINGS.md](DESIGN_AND_LEARNINGS.md) |
 | **The prompt used** | [prompts/system_prompt.md](prompts/system_prompt.md) |
+| How a lead triggers a call (API + `user_data`) | [scripts/place_call.ps1](scripts/place_call.ps1) |
 | Call flow, state model, Roman reading copy | [prompts/conversation_flow.md](prompts/conversation_flow.md) |
-| Test cases (41; core T01–T15) | [tests/test_cases.csv](tests/test_cases.csv) |
+| Test cases (42; core T01–T15) | [tests/test_cases.csv](tests/test_cases.csv) |
 | Evaluation rubric | [tests/evaluation_rubric.md](tests/evaluation_rubric.md) |
 | Test results | [tests/test_results.md](tests/test_results.md) |
 | Call recording | [evidence/recording_url.md](evidence/recording_url.md) |
@@ -70,6 +72,7 @@ prompts/         system prompt, flow design, change log
 tests/           test cases, rubric, results
 configuration/   Bolna, Cal.com and post-call extraction setup
 evidence/        recording, transcript, Loom, screenshots
+scripts/         place_call.ps1: the lead → Bolna API call (user_data incl. upcoming_dates)
 .agents/skills/  official Bolna skills used as build instructions in the IDE
 ```
 

@@ -2,6 +2,18 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.9: Dates by lookup, not arithmetic (2026-11-17)
+
+Trigger: D7. On Tue 17 Nov, "Saturday" became "शनिवार, नवंबर सत्रह" (today), and "Monday" became 19 Nov. The v0.6 instruction to count days carefully cannot be relied on, because weekday arithmetic is a known LLM weakness.
+
+| Change | Detail |
+|---|---|
+| New preloaded variable `{upcoming_dates}` | The next seven days as `Weekday=YYYY-MM-DD`, computed in IST by the dialer ([scripts/place_call.ps1](../scripts/place_call.ps1)) |
+| S6 Q1 | Convert the day by **lookup** in `{upcoming_dates}` (kal = first entry, parson = second); fall back to counting only if the variable is empty |
+| New test | TC-42: weekday-only request |
+
+Design note: this moves deterministic work out of the model and into code, the same principle as preloading the email.
+
 ## v0.8: Fixes from the first real booking (2026-11-17), verified live
 
 **Verification:** execution `6b56f180…` (API call with `user_data`) passed with 98 of 100: the name was used, 11:00 was accepted from the full slot list, and a real booking was Confirmed in Cal.com. **v0.8 is the submitted prompt.**

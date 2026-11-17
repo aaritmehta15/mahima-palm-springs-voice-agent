@@ -28,7 +28,7 @@ Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on
 
 | # | Item | Status | Evidence |
 |---|---|---|---|
-| 11 | Test cases documented | ✅ | [tests/test_cases.csv](tests/test_cases.csv) (41 cases; core T01–T15 mapped) |
+| 11 | Test cases documented | ✅ | [tests/test_cases.csv](tests/test_cases.csv) (42 cases; core T01–T15 mapped) |
 | 12 | Actual test results saved | ✅ Static and 4 live calls | [tests/test_results.md](tests/test_results.md) |
 | 13 | Final transcript saved with personal data removed | ✅ | [evidence/transcript.md](evidence/transcript.md) |
 | 14 | One accessible recording URL | ⏳ | [evidence/recording_url.md](evidence/recording_url.md); open it in a private window to check |
