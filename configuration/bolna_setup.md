@@ -77,6 +77,7 @@ If the dashboard assigns fixed names that cannot be changed, update the two name
 | `check_user_online_message` | `Hello, क्या आप मुझे सुन पा रहे हैं?` | Same line as the prompt's silence handler, so the wording stays consistent |
 | `call_terminate` (max duration) | `480` s (8 min) | Enough for pitch plus booking; caps cost |
 | `call_hangup_message` | leave empty | The closing lines in Section 7 already end the call |
+| LLM-based call hangup ("hang up when the conversation ends") | `on` | The prompt's `# Ending the Call` rule tells the model to end after any Section 7 closing; this setting lets Bolna actually disconnect |
 | Voicemail detection | `on` | Avoids pitching to voicemail |
 | `use_fillers` | `off` | The prompt controls acknowledgements |
 | `backchanneling` | `off` | Avoids "mhm" being spoken over Hindi pauses |

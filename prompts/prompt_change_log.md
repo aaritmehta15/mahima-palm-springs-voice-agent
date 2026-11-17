@@ -2,6 +2,18 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.2: Phase E static review fixes (design-time, not yet tested)
+
+Found by manual review of v0.1 against the Bolna Cal.com tool contract and Bolna call-hangup behaviour. No live tests were run.
+
+| # | Issue in v0.1 | Risk | Change in v0.2 |
+|---|---|---|---|
+| 1 | `[selected_slot]` was only described in spoken form, but `book_calendar_slot` needs the exact ISO 8601 start time | The model could pass "subah gyarah baje" or a rebuilt time, and the booking would fail or land on the wrong slot | `# Context Variables` now requires each slot to be kept in two forms: the ISO value from the tool (passed to booking) and Hindi time words (spoken) |
+| 2 | No explicit end-of-call rule | The agent may keep talking after a closing, or loop on "thank you"/"bye" | Added `# Ending the Call` to Section 2; enabled LLM-based hangup in [bolna_setup.md](../configuration/bolna_setup.md) |
+| 3 | Abuse handler continued into the Section 7 Branch E closing ("... Mahima Palm Springs zaroor yaad rakhiyega") | A cheerful sales close after abuse sounds tone-deaf | The abuse line is now itself the closing; the call ends immediately |
+
+Re-check: the automated lint was re-run after these edits (see below). The conversation flow doc and the setup guide were updated to match.
+
 ## v0.1: Initial design (design-time, not yet tested)
 
 **Basis:** the assignment brief, the confirmed design decisions in [assignment/requirements.md](../assignment/requirements.md), and patterns from the reference repositories.

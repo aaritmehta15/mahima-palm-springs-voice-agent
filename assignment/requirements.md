@@ -15,23 +15,23 @@ Create a voice AI agent for **Mahima Palm Springs** that calls a customer who en
 
 | ID | Requirement | Source | Deliverable / evidence | Status |
 |---|---|---|---|---|
-| R1 | Build the entire agent | Brief: Ask | Bolna agent configured per [configuration/bolna_setup.md](../configuration/bolna_setup.md); screenshots in [evidence/screenshots/](../evidence/screenshots/) | Pending |
-| R2 | Test it and write down test cases | Brief: Ask | [tests/test_cases.csv](../tests/test_cases.csv), [tests/evaluation_rubric.md](../tests/evaluation_rubric.md), [tests/test_results.md](../tests/test_results.md) | Pending |
-| R3 | One call recording or audio URL | Brief: Ask | [evidence/recording_url.md](../evidence/recording_url.md), [evidence/transcript.md](../evidence/transcript.md) | Pending |
-| R4 | Submit the prompt used | Brief: Ask | [prompts/system_prompt.md](../prompts/system_prompt.md) is the exact text pasted into Bolna | Pending |
-| R5 | Five-minute Loom | Brief: Ask | [evidence/loom_url.md](../evidence/loom_url.md) | Pending |
-| R6 | Script order: Greeting, Introduction with context and good-time check, Main Pitch, Site Visit Booking, Conclusion | Brief: Guidelines | `system_prompt.md` Sections 3 to 7 | Pending |
-| R7 | Prompt also contains AI Agent Background, Global Rules, Guardrails, FAQs | Brief: Guidelines | `system_prompt.md` Sections 1, 2, 8, 9 | Pending |
-| R8 | Use the supplied key facts where necessary | Brief: Guidelines | [knowledge/mahima_project_facts.md](../knowledge/mahima_project_facts.md) and the facts block in `system_prompt.md` | Pending |
-| R9 | All agent dialogue in Hinglish; common English words kept; no formal Hindi | Brief: Guidelines | Every `Agent:` line; Hinglish review in Phase E | Pending |
-| R10 | `Instructions:` after every dialogue | Brief: Guidelines | Every `Agent:` line is followed by `Instructions:`; checked automatically in Phase E | Pending |
-| R11 | Branches for interested, busy, not interested, wrong number, price and configuration questions, unknown questions, objections, senior-expert requests, site-visit requests, unavailable slots, booking errors, opt-outs | Build constraints | Branches in `system_prompt.md`; one or more test cases each | Pending |
-| R12 | Real availability check and booking through Cal.com; requested, pending and booked states kept distinct | Build constraints | `system_prompt.md` Section 6; [configuration/booking_setup.md](../configuration/booking_setup.md) | Pending |
-| R13 | No invented facts and no computed total price | Build constraints | `system_prompt.md` Section 8; anti-hallucination test cases | Pending |
-| R14 | Honest when asked whether the caller is an AI | Build constraints | `system_prompt.md` Section 8 and FAQ; test case | Pending |
-| R15 | No secrets or personal data in the repository | Build constraints | [.gitignore](../.gitignore); redaction rules in `evidence/` | Pending |
-| R16 | Licences of reference repositories respected | Build constraints | Attribution section in [README.md](../README.md) | Pending |
-| R17 | Structured post-call outcome | Build constraints | [configuration/post_call_extraction.md](../configuration/post_call_extraction.md) | Pending |
+| R1 | Build the entire agent | Brief: Ask | Bolna agent configured per [configuration/bolna_setup.md](../configuration/bolna_setup.md); screenshots in [evidence/screenshots/](../evidence/screenshots/) | Config guide written; agent not yet built |
+| R2 | Test it and write down test cases | Brief: Ask | [tests/test_cases.csv](../tests/test_cases.csv), [tests/evaluation_rubric.md](../tests/evaluation_rubric.md), [tests/test_results.md](../tests/test_results.md) | Cases and rubric written; not yet run |
+| R3 | One call recording or audio URL | Brief: Ask | [evidence/recording_url.md](../evidence/recording_url.md), [evidence/transcript.md](../evidence/transcript.md) | Pending (needs approved call) |
+| R4 | Submit the prompt used | Brief: Ask | [prompts/system_prompt.md](../prompts/system_prompt.md) is the exact text pasted into Bolna | Done (v0.2) |
+| R5 | Five-minute Loom | Brief: Ask | [evidence/loom_url.md](../evidence/loom_url.md) | Outline ready; not recorded |
+| R6 | Script order: Greeting, Introduction with context and good-time check, Main Pitch, Site Visit Booking, Conclusion | Brief: Guidelines | `system_prompt.md` Sections 3 to 7 | Done |
+| R7 | Prompt also contains AI Agent Background, Global Rules, Guardrails, FAQs | Brief: Guidelines | `system_prompt.md` Sections 1, 2, 8, 9 | Done |
+| R8 | Use the supplied key facts where necessary | Brief: Guidelines | [knowledge/mahima_project_facts.md](../knowledge/mahima_project_facts.md) and the facts block in `system_prompt.md` | Done |
+| R9 | All agent dialogue in Hinglish; common English words kept; no formal Hindi | Brief: Guidelines | Every `Agent:` line; Hinglish review in Phase E | Done; to verify by ear |
+| R10 | `Instructions:` after every dialogue | Brief: Guidelines | Every `Agent:` line is followed by `Instructions:`; checked automatically in Phase E | Done (39 of 39, lint) |
+| R11 | Branches for interested, busy, not interested, wrong number, price and configuration questions, unknown questions, objections, senior-expert requests, site-visit requests, unavailable slots, booking errors, opt-outs | Build constraints | Branches in `system_prompt.md`; one or more test cases each | Done in prompt; not yet tested |
+| R12 | Real availability check and booking through Cal.com; requested, pending and booked states kept distinct | Build constraints | `system_prompt.md` Section 6; [configuration/booking_setup.md](../configuration/booking_setup.md) | Done in prompt and config; not yet tested |
+| R13 | No invented facts and no computed total price | Build constraints | `system_prompt.md` Section 8; anti-hallucination test cases | Done in prompt; not yet tested |
+| R14 | Honest when asked whether the caller is an AI | Build constraints | `system_prompt.md` Section 8 and FAQ; test case | Done in prompt; not yet tested |
+| R15 | No secrets or personal data in the repository | Build constraints | [.gitignore](../.gitignore); redaction rules in `evidence/` | Done |
+| R16 | Licences of reference repositories respected | Build constraints | Attribution section in [README.md](../README.md) | Done |
+| R17 | Structured post-call outcome | Build constraints | [configuration/post_call_extraction.md](../configuration/post_call_extraction.md) | Config guide written; not yet configured |
 
 ## 3. Confirmed design decisions
 
