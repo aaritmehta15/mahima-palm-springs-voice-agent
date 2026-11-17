@@ -30,7 +30,7 @@ Dashboard → **Agents** → **Create agent** → choose a blank or custom agent
 | Agent Welcome Message | `नमस्ते, क्या मेरी बात {customer_name} जी से हो रही है?` (Section 3 of the prompt, word for word) |
 | Agent Prompt | Everything between `===== BEGIN PROMPT =====` and `===== END PROMPT =====` in [prompts/system_prompt.md](../prompts/system_prompt.md), excluding the marker lines |
 
-Variables used: `{customer_name}`, `{customer_email}` and `{upcoming_dates}` are passed per call as `user_data` through `POST /call` (see [scripts/place_call.ps1](../scripts/place_call.ps1)). **Dashboard test calls do not apply Variables defaults** (found in testing, D4), so use the API for any call that depends on these values. `{current_date}` and `{current_time}` are Bolna system variables.
+Variables used: `{customer_name}`, `{customer_email}`, `{upcoming_dates}` and `{call_reason}` (`callback` for scheduled callbacks) are passed per call as `user_data` through `POST /call` (see [scripts/place_call.ps1](../scripts/place_call.ps1)). **Dashboard test calls do not apply Variables defaults** (found in testing, D4), so use the API for any call that depends on these values. `{current_date}` and `{current_time}` are Bolna system variables.
 
 ## 3. LLM tab
 

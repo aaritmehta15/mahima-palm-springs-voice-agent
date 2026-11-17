@@ -1,0 +1,36 @@
+assistant: नमस्ते, क्या मेरी बात  जी से हो रही है?
+user:  मैं आरिश बोल रहा हूं
+assistant:  जी, मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  हां जी बताइए
+assistant:  बहुत अच्छा, thank you। आप Mahima Palm Springs में तीन BHK देख रहे हैं या चार BHK?
+user:  तीन bhk देख रहा हूं
+assistant:   बढ़िया। हमारा project टोंक रोड पर है, चोखी ढाणी से सिर्फ़ तीन किलोमीटर, राधा स्वामी सत्संग ब्यास के बिल्कुल सामने। ये location आपके लिए ठीक रहेगी?
+user:  location ठीक है
+assistant:   ये एक premium gated township है, जिसमें spacious flats सत्रह सौ पाँच से छब्बीस सौ उन्नीस sq. ft. तक के हैं। क्या ये size range आपकी family के हिसाब से ठीक है?
+user:  हां size range ठीक है
+assistant:   Possession जनवरी दो हज़ार सत्ताईस में due है, और अभी का rate पचपन सौ रुपये per sq. ft. है। क्या ये आपके budget में fit बैठता है?
+user:  total कितना पड़ेगा
+assistant:   Total price flat के exact size और बाकी charges पर depend करता है, जो मेरे पास confirmed नहीं हैं। Official cost sheet हमारे senior expert आपको दे देंगे। क्या मैं आपकी मदद के लिए senior expert से आपको callback करवा दूँ?
+user:  नहीं
+assistant:   Flat की असली feel तो site पर आकर ही आती है। क्या आप family के साथ एक site visit करना चाहेंगे?
+user:  हां saturday आ सकता हूं
+assistant:  बढ़िया। आपके लिए शनिवार, नवंबर सत्रह, दो हज़ार छब्बीस को site visit के लिए कौन सा time ठीक रहेगा?
+user:  कौन सा कौन सा slot है
+assistant: एक second, मैं उस दिन के available slots check कर रही हूँ।
+assistant:  माफ़ कीजिए, शनिवार, नवंबर सत्रह को कोई slot खाली नहीं है। क्या कोई और दिन आपके लिए ठीक रहेगा?
+user:  हां
+assistant:  आपके लिए कौन सा दिन ठीक रहेगा site visit के लिए?
+user:  monday ग्यारह बजे वाला
+assistant:   सोमवार, नवंबर उन्नीस को सुबह ग्यारह बजे का slot available है। क्या मैं सोमवार, नवंबर उन्नीस को सुबह ग्यारह बजे का slot आपके लिए book कर दूँ?
+user:  हां book कर दो
+assistant:   Booking की confirmation email पर भेजूँगी। क्या मैं उसी email ID पर भेज दूँ जो आपने Facebook form में दी थी?
+user:  हां भेज दो
+assistant: ठीक है, मैं आपका slot book कर रही हूँ, बस एक second।
+assistant:  माफ़ कीजिए, email ID confirm नहीं हो पाई। कृपया confirmation भेजने के लिए अपनी email ID आराम से एक-एक letter बोलिएगा।
+user: eight  a
+assistant:   कृपया email ID पूरा बताइए, ताकि मैं सही से confirmation कर सकूँ।
+user:  a a r i
+assistant:   कृपया email ID पूरा बताइए, ताकि मैं सही से confirmation कर सकूँ।
+user: ठीक है बस
+user:  ठीक है बताता हूं अभी
+assistant: मैंने आपकी preferred date और time note कर लिया है, हमारी team जल्दी ही call करके site visit confirm करेगी। आपके time के लिए thank you, आपका दिन अच्छा रहे।

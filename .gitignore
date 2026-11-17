@@ -29,3 +29,6 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Personal run files (phone, email): never commit
+local/

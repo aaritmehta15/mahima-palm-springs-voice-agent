@@ -1,85 +1,51 @@
 # Post-Call Extraction (Bolna Dispositions)
 
-After every call, Bolna runs these extraction questions over the transcript and stores the answers in `extracted_data` on the execution. This gives the evaluator a structured **business outcome** for every call, with no database or CRM. Reference: [.agents/skills/create-disposition/SKILL.md](../.agents/skills/create-disposition/SKILL.md).
+After every call, Bolna runs these questions over the transcript and stores the answers in `extracted_data`. They do two jobs:
 
-> Add these **after** the main conversation works. They are an enhancement, not a requirement for the first test call.
+1. **Reporting:** a structured business outcome for every call, with no CRM needed.
+2. **Automation:** [`scripts/post_call.ps1`](../scripts/post_call.ps1) reads `Opt-out`, `Callback Day` and `Callback Time` and **acts on them**. An opt-out goes on the do-not-call list. A callback request becomes a real scheduled call.
 
-Configure in the dashboard: Agent → **Analytics / Extractions**. Each item below is one disposition. Use model `gpt-4.1-mini`.
+> The names below must match exactly, because `post_call.ps1` looks them up by name.
 
-**System prompt for all dispositions:**
-`You are analysing a transcript of an outbound Hinglish sales call by Neha, an AI assistant for Mahima Palm Springs, Jaipur. Judge only from what was actually said and from tool results in the transcript. If something was not discussed, choose the "not discussed" or "none" option.`
+Configure in Bolna: Agent → **Extractions** → **New Category** `Lead Outcome` → add each disposition. Model: `gpt-4.1-mini`.
 
-## Category: Call Outcome
+**System prompt (shared):**
+`You are analysing a transcript of an outbound Hinglish sales call by Neha, an AI assistant for Mahima Palm Springs, Jaipur. Judge only from what was actually said. If something was not discussed, choose the not discussed or none option.`
 
-### 1. Call Outcome (pre-defined)
-Question: `What was the final outcome of this call?`
+## Category `Lead Outcome`
 
-| Value | Condition |
-|---|---|
-| `interested` | The customer showed interest and a site visit was confirmed or is pending confirmation |
-| `follow_up` | The customer was busy, asked for a callback, or asked for a senior expert or sales team confirmation |
-| `not_interested` | The customer declined |
-| `wrong_number` | Wrong person, or no enquiry was made |
-| `opted_out` | The customer explicitly asked not to be called again |
-| `no_conversation` | Voicemail, silence or disconnected before the introduction |
+| # | Name | Question | Type and options |
+|---|---|---|---|
+| 1 | `Call Outcome` | What was the final outcome of this call? | Pre-defined: `interested` (a visit was confirmed or requested) · `follow_up` (busy, callback, or senior expert requested) · `not_interested` · `wrong_number` · `opted_out` · `no_conversation` |
+| 2 | `Site Visit Status` | What is the status of the site visit? | Pre-defined: `not_requested` · `pending_confirmation` (wanted a visit, but no booking succeeded) · `confirmed` (only if the agent said the booking succeeded after the booking tool ran) |
+| 3 | `Configuration Interest` | Which flat did the customer want? | Pre-defined: `3_bhk` · `4_bhk` · `undecided` · `not_discussed` |
+| 4 | `Opt-out` | Did the customer explicitly ask not to be called again? | Pre-defined: `true` · `false` |
+| 5 | `Callback Day` | If the customer asked to be called back later, on which day? | Pre-defined: `none` · `today` · `tomorrow` · `day_after_tomorrow` |
+| 6 | `Callback Time` | If the customer asked for a callback, what time of day did they ask for? | Pre-defined: `morning` · `afternoon` · `evening` · `same_time` (they said "isi time") · `not_specified` |
+| 7 | `Unknown Questions` | List the questions the agent could not answer from verified facts (for example amenities, RERA, loan, discount). Answer none if there were none. | Free text |
 
-### 2. Site Visit Status (pre-defined): same three states as the prompt's `[visit_status]`
-Question: `What is the status of the site visit?`
+### How `post_call.ps1` turns 5 and 6 into a real call
 
-| Value | Condition |
-|---|---|
-| `not_requested` | No visit was requested, or the customer declined a visit |
-| `pending_confirmation` | The customer wanted a visit or gave a preferred date or time, but the booking tool did not return a successful booking |
-| `confirmed` | **Only** if `book_appointment` returned a successful booking in the transcript or tool log |
+| Callback Day | Offset from the call date (IST) | Callback Time | Hour (IST) |
+|---|---|---|---|
+| `today` | +0 days | `morning` | 11:00 |
+| `tomorrow` | +1 day | `afternoon` | 14:00 |
+| `day_after_tomorrow` | +2 days | `evening` | 17:00 |
+| | | `same_time` | the original call's time |
+| | | `not_specified` | 11:00 |
 
-### 3. Preferred Visit Time (free text)
-Question: `What date and time did the customer ask for or agree to for the site visit, as they said it? If confirmed, give the booked slot in ISO 8601 with a +05:30 offset. Otherwise answer none.`
-
-## Category: Lead Profile
-
-### 4. Configuration Interest (pre-defined)
-Values: `3_bhk`, `4_bhk`, `undecided`, `not_discussed`.
-
-### 5. Interest Level (pre-defined)
-| Value | Condition |
-|---|---|
-| `high` | Visit confirmed, or a specific visit date was requested |
-| `medium` | Interested but wanted a callback, the expert, or time to think |
-| `low` | Not interested, wrong number or opted out |
-
-### 6. Objections Raised (free text)
-Question: `List the objections the customer raised, comma separated (e.g. price, location, possession timing, family discussion, other projects). Answer none if there were none.`
-
-## Category: Follow-up and Compliance
-
-### 7. Callback Requested (pre-defined, plus free text)
-Values: `yes`, `no`. Free text: `When did the customer ask to be called back, as they said it? Answer none if not asked.`
-
-> The "senior expert will call tomorrow between 10 AM and 5 PM" line is from the assessment's example script. In this demo, the request is **recorded** only in this extraction field. No real scheduling system acts on it, and the documentation does not claim otherwise.
-
-### 8. Opt-out (pre-defined)
-Values: `true` (the customer explicitly asked not to be contacted again), `false`.
-**Production use:** every `true` must go on a do-not-call list before the next campaign.
-
-### 9. Unknown Questions (free text)
-Question: `List the questions the agent could not answer from verified facts and offered to get confirmed by the sales team (e.g. amenities, RERA, total price, loan, discount). Answer none if there were none.`
-**Use:** shows the sales team which facts to verify and add to [knowledge/mahima_project_facts.md](../knowledge/mahima_project_facts.md).
-
-### 10. Asked If AI (pre-defined)
-Values: `yes`, `no`. Tracks whether the disclosure in the introduction is enough.
+It then calls `POST /call` with `scheduled_at` and `call_reason=callback`, **after asking the operator to confirm**, because a scheduled call spends credit. The scheduled call opens with the callback introduction (prompt S4 Branch E).
 
 ## Testing extractions without a phone call
 
-Bolna can test every disposition against a pasted transcript:
-`POST /v2/agent/{agent_id}/dispositions/test` (see the `create-disposition` skill), or use the dashboard test button.
+Use the **Test** button on the Extractions tab with a saved transcript ([tests/transcripts/](../tests/transcripts/)).
 
-Expected results on the test transcripts:
-
-| Test | Call Outcome | Site Visit Status | Callback Requested | Opt-out |
+| Transcript | Call Outcome | Site Visit Status | Opt-out | Callback Day / Time |
 |---|---|---|---|---|
-| TC-01 interested, books | `interested` | `confirmed` | `no` | `false` |
-| TC-02 busy | `follow_up` | `not_requested` | `yes` | `false` |
-| TC-04 not interested | `not_interested` | `not_requested` | `no` | `false` |
-| TC-25 slot unavailable | `interested` | `confirmed` or `pending_confirmation` | `no` | `false` |
-| TC-27 booking tool fails | `interested` | `pending_confirmation` | `no` | `false` |
-| TC-31 opt-out | `opted_out` | `not_requested` | `no` | `true` |
+| `call4_6b56f180` (submission) | `interested` | `confirmed` | `false` | `none` / `not_specified` |
+| `call1_6d1ec` (busy, "kal isi time") | `follow_up` | `not_requested` | `false` | `tomorrow` / `same_time` |
+| `call2_ec16fc4c` (booking failed) | `interested` | `pending_confirmation` | `false` | `none` / `not_specified` |
+
+## Known limitation
+
+Bolna's built-in Call Summary misread "पचपन सौ" as ₹5,550 in two calls. Prompt v1.0 says "पाँच हज़ार पाँच सौ" to remove the ambiguity. Extractions are still model output, so check them against the transcript before acting on money-related fields.

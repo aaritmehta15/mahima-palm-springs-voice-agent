@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 4 (Round 2; Round 3 attempts 1 to 3). Total live spend: $0.870.
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 5. Total live spend: $1.08.
 
 ## 1. Run summary
 
@@ -111,3 +111,34 @@ Score: Factual 100, Flow 75, Hinglish 90, Tools 85, Naturalness 75 → **86.25, 
 | **Weighted** | **98** | **PASS**, zero critical failures |
 
 Known remaining issues (documented, not blocking): weekday-to-date conversion is unreliable when the customer gives only a weekday (D7; mitigated in the demo by the customer saying the date); Bolna's tool panel does not show tool invocations; Bolna's call summary misstated the rate as 5,550.
+
+## 9. Round 4: v0.9 weekday-only call (execution `cd97fa2d…`, 194 s, $0.21)
+
+The customer said only "Saturday ko" and asked for 12:00, which had not been offered.
+
+| Check | Result |
+|---|---|
+| Date lookup (D7 fix) | `upcoming_dates` reached the agent (`Saturday=2026-11-21`); the booked date has to be confirmed in Cal.com because the agent never said the date aloud (D19) |
+| 12:00 booked | Booked, but without saying it was free (D16) and with no part of the day (D15) |
+| Order | **The booking tool started before the email question (D18)** |
+| Voice | "sq ft" read as an abbreviation (D14) |
+| Offered slots | 9:00, 9:30, 10:00 back to back (D17); 10:00 was offered although a 10:00 booking already existed, **under investigation** (raw tool logs requested) |
+
+| Defect | Found in | Observed | Fix | Re-test |
+|---|---|---|---|---|
+| D14 | `cd97fa2d` | "sq. ft." spoken as "sq ft" | v1.0: "square feet" in every spoken line | Pending |
+| D15 | `cd97fa2d` | Time without part of day | v1.0 time-of-day rule | Pending |
+| D16 | `cd97fa2d` | Unoffered time booked without confirming availability aloud | v1.0 S6 Branch E and F | Pending |
+| D17 | `cd97fa2d` | Three back-to-back morning slots offered | v1.0 spread-across-day rule | Pending |
+| D18 | `cd97fa2d` | Booking tool started before email confirmation | v1.0 single combined read-back; S6 Q4 removed | Pending |
+| D19 | `cd97fa2d` | Weekday without date; summary misread "पचपन सौ" | v1.0 date always in `[visit_day]`; "पाँच हज़ार पाँच सौ" | Pending |
+
+## 10. Automated transcript checks
+
+[`tests/check_transcript.py`](check_transcript.py) runs rule-based checks on every transcript: critical failures (false booking claim, pitching after an opt-out, a total price, an amenity claim, not disclosing AI) plus voice-quality rules (digits, abbreviations, formal Hindi, masculine forms, time without part of day, visit day without date, booking before email, long turns, repeated lines).
+
+Run against the five real calls ([transcripts/](transcripts/)), it independently found the defects that had been found by hand: D6 (four-sentence turn), D10 (कृपया, repeated line), D14, D15, D18 and D19. Full output: [transcript_check_report.md](transcript_check_report.md).
+
+What it **cannot** see: tool calls. The invented slots in call `ec16fc4c` (D9) were only provable from the execution JSON, so the checker supplements tool-log review and the Cal.com booking check; it does not replace them.
+
+Self-test: every scripted line in prompt v1.0, filled with sample values, passes all style rules (0 major flags).

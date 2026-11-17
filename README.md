@@ -10,9 +10,11 @@ Built on **Bolna** with no custom code. This repository is the submission packag
 |---|---|
 | **Design choices, prompt style and learnings** | [DESIGN_AND_LEARNINGS.md](DESIGN_AND_LEARNINGS.md) |
 | **The prompt used** | [prompts/system_prompt.md](prompts/system_prompt.md) |
-| How a lead triggers a call (API + `user_data`) | [scripts/place_call.ps1](scripts/place_call.ps1) |
+| How a lead triggers a call (API + `user_data`, do-not-call check) | [scripts/place_call.ps1](scripts/place_call.ps1) |
+| After the call: opt-out → do-not-call list, callback → scheduled call | [scripts/post_call.ps1](scripts/post_call.ps1) |
+| Automatic transcript checker + 5 real call transcripts | [tests/check_transcript.py](tests/check_transcript.py) · [tests/transcripts/](tests/transcripts/) · [report](tests/transcript_check_report.md) |
 | Call flow, state model, Roman reading copy | [prompts/conversation_flow.md](prompts/conversation_flow.md) |
-| Test cases (42; core T01–T15) | [tests/test_cases.csv](tests/test_cases.csv) |
+| Test cases (49; core T01–T15) | [tests/test_cases.csv](tests/test_cases.csv) |
 | Evaluation rubric | [tests/evaluation_rubric.md](tests/evaluation_rubric.md) |
 | Test results | [tests/test_results.md](tests/test_results.md) |
 | Call recording | [evidence/recording_url.md](evidence/recording_url.md) |
@@ -43,6 +45,14 @@ flowchart LR
 5. The transcript, recording URL and costs are read with `GET /executions/{id}`.
 
 Webhooks can push the same payload in real time. They aren't needed for this demo, so no server is deployed.
+
+## Closing the loop: the agent's words have consequences
+
+| Customer says | During the call | After the call |
+|---|---|---|
+| "Haan, Saturday ko" | Real availability → one read-back (date, time with part of day, email) → booking | A Cal.com booking + confirmation email |
+| "Kal shaam call karna" | "Main aapko kal shaam phir se call karoongi" | `post_call.ps1` schedules a real call for tomorrow 17:00 IST; it opens with "Aapne kaha tha ki main aapko is time par dobara call karoon" |
+| "Mujhe call mat karna" | Immediate acknowledgement, no persuasion | The number goes on a do-not-call list; `place_call.ps1` **refuses** to dial it again |
 
 ## Key design choices
 
@@ -83,7 +93,7 @@ scripts/         place_call.ps1: the lead → Bolna API call (user_data incl. up
 3. Add post-call extractions: [configuration/post_call_extraction.md](configuration/post_call_extraction.md).
 4. Test in four rounds to fit a $5 credit budget: static desk check (done), one voice-check call, one end-to-end booking call (the recording), then regression. See [tests/evaluation_rubric.md](tests/evaluation_rubric.md).
 
-**Current results:** 4 live calls, $0.87 spent in total. The final call (`6b56f180`, prompt v0.8) scored **98 of 100** and created a **real, confirmed Cal.com booking**. 13 defects were found across static and live testing and fixed through prompt versions v0.2 to v0.8; each is traced in [tests/test_results.md](tests/test_results.md) and [prompts/prompt_change_log.md](prompts/prompt_change_log.md).
+**Current results:** 5 live calls, $1.08 spent. The submission call (`6b56f180`, v0.8) scored **98 of 100** with a **real, confirmed Cal.com booking**. 19 defects were found across static checks, live calls and the automatic transcript checker, and fixed through prompt versions v0.2 to v1.0. Each one is traced in [tests/test_results.md](tests/test_results.md) and [prompts/prompt_change_log.md](prompts/prompt_change_log.md). v1.0 live re-tests are in progress.
 
 No API keys, phone numbers or personal emails are stored in this repository.
 

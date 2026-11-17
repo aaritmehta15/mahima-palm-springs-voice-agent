@@ -2,6 +2,27 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v1.0: Voice details, booking order, and closing the loop (2026-11-18)
+
+Trigger: live call `cd97fa2d` (v0.9). The customer said only "Saturday" and asked for 12:00. Defects D14 to D19 are in [tests/test_results.md](../tests/test_results.md). All of them were also caught automatically by the new transcript checker ([tests/check_transcript.py](../tests/check_transcript.py)).
+
+| Defect | Observed | Change |
+|---|---|---|
+| D14 | The voice read "sq. ft." as "sq ft" | All spoken lines say "square feet" or "per square foot"; rule: units always in full |
+| D15 | "बारह बजे" with no part of the day (AM or PM) | Rule: every time carries सुबह, दोपहर or शाम; a bare time is mapped to the daytime slot and said back with its part of day |
+| D16 | Asked for 12:00 (not offered), and the agent went straight to booking without saying it was free | New S6 Branch E: "जी, ... का slot भी खाली है" + combined read-back; Branch F when it is not free |
+| D17 | Offered 9:00, 9:30 and 10:00, all back to back | Rule: offer up to three slots spread across the day |
+| D18 | The booking tool started before the email question | Slot, date and email are confirmed in **one** read-back line (S6 Q3, old Q4 removed); the booking is allowed only after that yes |
+| D19 | "शनिवार को", weekday without a date; Bolna's summary read "पचपन सौ" as 5,550 | `[visit_day]` must include the date; amounts said as "पाँच हज़ार पाँच सौ" |
+
+Closing the loop (new behaviour, prompt plus scripts):
+
+| Customer says | Agent | After the call (`scripts/post_call.ps1`) |
+|---|---|---|
+| "Kal call karna" | Asks once: "कल सुबह, दोपहर या शाम?"; closes "मैं आपको कल शाम फिर से call करूँगी" | Reads the Callback Day and Time extractions and schedules a real `POST /call` with `scheduled_at` and `call_reason=callback` |
+| (the scheduled call) | New S4 Branch E: "आपने कहा था कि मैं आपको इस time पर दोबारा call करूँ" | — |
+| "Mujhe call mat karna" | Immediate acknowledgement, no persuasion | Adds the number to the do-not-call list; `place_call.ps1` refuses future calls to it |
+
 ## v0.9: Dates by lookup, not arithmetic (2026-11-17)
 
 Trigger: D7. On Tue 17 Nov, "Saturday" became "शनिवार, नवंबर सत्रह" (today), and "Monday" became 19 Nov. The v0.6 instruction to count days carefully cannot be relied on, because weekday arithmetic is a known LLM weakness.

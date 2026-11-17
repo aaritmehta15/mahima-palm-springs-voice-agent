@@ -1,0 +1,39 @@
+assistant: नमस्ते, क्या मेरी बात  जी से हो रही है?
+user:  मैं आरिष्ट बोल रहा हूं
+assistant:  जी, ये call  जी के लिए था, उनकी Facebook पर की गई property enquiry के बारे में। क्या मैं उनसे किसी और time पर बात कर सकती हूँ?
+user:  हां मैं ही बोल रहा हूं बताइए
+assistant:  मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  हां जी बताइए
+assistant:  बहुत अच्छा, thank you। आप Mahima Palm Springs में तीन BHK देख रहे हैं या चार BHK?
+user:  तीन bhk
+assistant:   बढ़िया। हमारा project टोंक रोड पर है, चोखी ढाणी से सिर्फ़ तीन किलोमीटर, राधा स्वामी सत्संग ब्यास के बिल्कुल सामने। ये location आपके लिए ठीक रहेगी?
+user:  ठीक है
+assistant:   ये एक premium gated township है, जिसमें spacious flats सत्रह सौ पाँच से छब्बीस सौ उन्नीस sq. ft. तक के हैं। क्या ये size range आपकी family के हिसाब से ठीक है?
+user:  ठीक है
+assistant:   Possession जनवरी दो हज़ार सत्ताईस में due है, और अभी का rate पचपन सौ रुपये per sq. ft. है। क्या ये आपके budget में fit बैठता है?
+user:  ठीक है
+assistant:   Flat की असली feel तो site पर आकर ही आती है। क्या आप family के साथ एक site visit करना चाहेंगे?
+user:  हां saturday इक्कीस november को आ सकता हूं
+assistant: एक second, मैं उस दिन के available slots check कर रही हूँ।
+assistant:  शनिवार, इक्कीस नवंबर को सुबह नौ बजे, सुबह साढ़े नौ बजे, और सुबह दस बजे के slots available हैं। इनमें से कौन सा time आपके लिए ठीक रहेगा?
+user:  ग्यारह बजे वाला
+assistant:   माफ़ कीजिए, सुबह ग्यारह बजे का slot अभी available नहीं है। क्या मैं सुबह नौ बजे, साढ़े नौ बजे या दस बजे का slot आपके लिए book कर दूँ?
+user:  दस बजे का
+assistant:  तो मैं शनिवार, इक्कीस नवंबर को सुबह दस बजे का slot आपके लिए book कर दूँ?
+user:  हां book कर दिया जाए
+assistant:   Booking की confirmation email पर भेजूँगी। क्या मैं उसी email ID पर भेज दूँ जो आपने Facebook form में दी थी?
+user:  हां सही है
+assistant: ठीक है, मैं आपका slot book कर रही हूँ, बस एक second।
+assistant:  Confirmation भेजने के लिए आपकी email ID बता दीजिए, आराम से एक एक letter बोलिएगा।
+user:  [spelled email redacted]
+assistant: आपने अभी जो email
+user:  [redacted]
+assistant:  आपका email है [spelled email redacted], क्या ये सही है?
+user:  starting में double a है
+assistant:  समझ गई, आपका email है [spelled email redacted], क्या ये सही है?
+user:  [spelled email redacted]
+assistant:   समझ गई, आपका email है [spelled email redacted], क्या ये सही है?
+user:  हां सही है
+assistant: ठीक है, मैं आपका slot book कर रही हूँ, बस एक second।
+assistant:  आपका site visit शनिवार, इक्कीस नवंबर को सुबह दस बजे के लिए book हो गया है, और confirmation आपकी email पर आ जाएगा। Mahima Palm Springs में आपका इंतज़ार रहेगा, आपका दिन अच्छा रहे।
+assistant: Hello, क्या आप मुझे सुन पा रहे हैं?

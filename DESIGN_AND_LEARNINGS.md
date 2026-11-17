@@ -1,6 +1,6 @@
 # Design Choices, Prompt Style and What I Learned
 
-**In one line:** I treated the prompt as a piece of software. It has a spec, a test suite and a defect log, and I made eight versions, each driven by evidence from real calls. The final call created a real Cal.com booking and scored 98 of 100.
+**In one line:** I treated the prompt as a piece of software. It has a spec, a test suite and a defect log, and I made eleven versions (v0.1 to v1.0), each driven by evidence from real calls or checks. The final call created a real Cal.com booking and scored 98 of 100.
 
 ---
 
@@ -46,6 +46,9 @@ I ran four live calls within a $5 budget, plus static desk checks of 15 core sce
 | 6 | A voice-spelled email was booked as `daaritmetha...@gmail.com` (call `9a476680`) | Spelling an email over the phone defeats STT | Preload name and email from the lead via API `user_data`; the agent only reads it back | Final call: one "haan", correct email |
 | 7 | "11 baje available nahi hai", although 11:00 was free | The model remembered only the three slots it had spoken | Keep the full tool result; reject only what is truly missing (v0.8) | Final call: 11:00 booked |
 | 8 | A booking failed, and the agent **did not** claim success, closing with "team confirm karegi" | — (the guardrail worked) | — | Call `ec16fc4c` |
+| 9 | "sq ft" read as an abbreviation, "बारह बजे" with no AM or PM, "शनिवार को" with no date (call `cd97fa2d`) | Text written for reading, not for listening | Units in full, every time with सुबह, दोपहर or शाम, every day with its date (v1.0) | Checker rules enforce it on every call |
+| 10 | The booking tool fired **before** the email was confirmed | Two separate confirmation turns gave the model room to skip one | One read-back line confirms date, time and email together (v1.0) | Checker rule `ORDER_BOOKED_BEFORE_EMAIL` |
+| 11 | "Kal call karna" was only a promise; nothing would call back | Words without a system behind them | `post_call.ps1` turns the extraction into a scheduled call; opt-outs go on a do-not-call list the dialer enforces | TC-46 and TC-47 |
 
 **Final call (`6b56f180`, v0.8):** greeted by name → permission → qualification → pitch → real availability → read-back → preloaded email → **booking Confirmed in Cal.com** → the agent ended the call. 172 s, $0.18, rubric 98 of 100.
 
@@ -60,7 +63,10 @@ Full trail: [tests/test_results.md](tests/test_results.md) · [prompts/prompt_ch
 3. **Move work out of the LLM when it's deterministic.** Weekday maths and email spelling are solved problems in code and unreliable in a model. The best fixes were *architectural* (`upcoming_dates`, preloaded email), not more instructions.
 4. **Honesty needs a state machine, not an adjective.** "Be truthful" didn't prevent invented slots. An explicit `pending_confirmation` state, plus "say booked only after tool success", held even under a real tool failure.
 5. **Voice punishes verbosity.** Every extra sentence costs latency and money and invites interruption. "Answer only what was asked" improved both naturalness and cost.
-6. **Test cheaply, then test for real.** Static desk checks found 3 bugs for free; live calls found 10 more that no desk check could (STT mishearing, tool contracts, date maths). Both were needed.
+6. **Voice is a different medium from text.** "sq. ft.", "बारह बजे" and "पचपन सौ" look fine on screen and fail on a phone: the first is read as letters, the second has no AM or PM, and the third was misread by Bolna's own summariser as ₹5,550. Write for the ear.
+7. **Promises need plumbing.** "I'll call you tomorrow" and "we won't call again" are product commitments. They only become true when code acts on them: a scheduled call and an enforced do-not-call list.
+8. **Automate the boring checks.** A 200-line rule checker re-found, on its own, most of the defects I had found by ear across five calls. It now runs after every call.
+9. **Test cheaply, then test for real.** Static desk checks found 3 bugs for free; live calls found 16 more that no desk check could (STT mishearing, tool contracts, date maths). Both were needed.
 
 ---
 
@@ -78,4 +84,4 @@ Full trail: [tests/test_results.md](tests/test_results.md) · [prompts/prompt_ch
 2. A **do-not-call list** fed by the opt-out extraction.
 3. A **verified fact sheet** from the client, driven by the "unknown questions" extraction, which shows exactly what customers ask that we can't answer.
 4. **WhatsApp confirmation** of the booking with a location pin, sent after `confirmed`.
-5. **Automated regression**: replay the 42 test scenarios in text mode against each new prompt version before any live call.
+5. **Automated regression**: replay the 49 test scenarios in text mode against each new prompt version before any live call.

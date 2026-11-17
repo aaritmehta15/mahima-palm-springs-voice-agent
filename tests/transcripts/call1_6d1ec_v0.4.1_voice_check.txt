@@ -1,0 +1,15 @@
+assistant: नमस्ते, क्या मेरी बात  जी से हो रही है?
+user:  नमस्ते हां मैं आरेन्द्र बोल रहा हूं
+assistant:  जी आरेन्द्र जी, मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  हां बताइए
+assistant:  बहुत अच्छा, thank you। आप Mahima Palm Springs में तीन BHK देख रहे हैं या चार BHK?
+user:  तीन bhk का वैसे rate क्या है
+assistant:  अभी का rate पचपन सौ रुपये per sq. ft. है। Flats सत्रह सौ पाँच से छब्बीस सौ उन्नीस sq. ft. तक के हैं। Exact floor plan आपको sales team या site visit पर मिल जाएगा। आप तीन BHK के लिए interested हैं, सही है?
+user:  swimming pool है क्या
+assistant:   ये एक premium gated township है, पर amenities की confirmed list अभी मेरे पास नहीं है। मैं आपके लिए sales team से confirm करवा सकती हूँ, करवा दूँ?
+user:  नहीं नहीं रहने दीजिए
+assistant:   समझ गई। हमारा project टोंक रोड पर है, चोखी ढाणी से सिर्फ़ तीन किलोमीटर, राधा स्वामी सत्संग ब्यास के बिल्कुल सामने। ये location आपके लिए ठीक रहेगी?
+user:  अभी मुझे जाना है कल call करना
+assistant:  कोई बात नहीं, आपको किस time पर call करना ठीक रहेगा?
+user:  कल इसी time call कर लेना
+assistant:  ठीक है, मैंने note कर लिया है, हमारी team आपको कल इसी time call करेगी। आपके time के लिए thank you, आपका दिन अच्छा रहे।

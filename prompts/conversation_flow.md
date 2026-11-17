@@ -1,6 +1,6 @@
-# Conversation Flow: Mahima Palm Springs Outbound Agent (prompt v0.9)
+# Conversation Flow: Mahima Palm Springs Outbound Agent (prompt v1.0)
 
-This document explains the call design behind [system_prompt.md](system_prompt.md). The system prompt is the source of truth. This file is kept in sync with **v0.9**.
+This document explains the call design behind [system_prompt.md](system_prompt.md). The system prompt is the source of truth. This file is kept in sync with **v1.0**.
 
 ## 1. Call flow
 
@@ -37,14 +37,15 @@ flowchart TD
     V1 -->|Tool error ×2| VC
     VA --> V2
     VA -->|Still none| C_PEND["S7 B Pending close"]
-    V2 --> V3["S6 Q3 Read back slot, get a yes"]
-    V3 --> V4["S6 Q4 Confirm preloaded email"]
-    V4 -->|Email blank or different| VD["S6 Branch D<br/>Collect + spell back, max 2"]
-    V4 -->|book_appointment success| C_BOOK["S7 A Confirmed close"]
+    V2 -->|Picks an offered slot| V3["S6 Q3 ONE read-back:<br/>date + time with part of day + email"]
+    V2 -->|Asks another time, free| VE["S6 Branch E<br/>'woh slot bhi khaali hai' + read-back"] --> V3
+    V2 -->|Asks another time, taken| VF["S6 Branch F<br/>nearest free slots"] --> V2
+    V3 -->|Email blank or different| VD["S6 Branch D<br/>Collect + spell back, max 2"]
+    V3 -->|yes → book_appointment success| C_BOOK["S7 A Confirmed close"]
     VD -->|book_appointment success| C_BOOK
     VD -->|Unclear twice| C_PEND
-    V4 -->|Slot taken| VB["S6 Branch B<br/>Re-check slots"] --> V2
-    V4 -->|Tool error ×2| VC["S6 Branch C<br/>Booking error"] --> C_PEND
+    V3 -->|Slot taken| VB["S6 Branch B<br/>Re-check slots"] --> V2
+    V3 -->|Tool error ×2| VC["S6 Branch C<br/>Booking error"] --> C_PEND
 ```
 
 **Anytime handlers** (Section 2) override the current step:
@@ -54,8 +55,8 @@ flowchart TD
 | "Are you a robot or an AI?" | Truthful answer, then resume |
 | Question not in the verified facts | Standard line: "Iski verified jaankari abhi mere paas nahi hai..." + offer sales team confirmation, then resume |
 | Wants a human, customer care or senior expert | Confirm → S7 D (callback tomorrow 10 AM to 5 PM) |
-| Explicit opt-out | Acknowledge immediately → S7 G |
-| Busy mid-call | Ask the callback time once → S7 C |
+| Explicit opt-out | Acknowledge immediately → S7 G; **post_call.ps1 adds the number to the do-not-call list; the dialer refuses it** |
+| Busy, or "kal call karna" | Ask once: "kal subah, dopahar ya shaam?" → S7 C; **post_call.ps1 schedules the real callback** |
 | Abuse | One calm line, end the call (no sales close) |
 | Silence or unclear audio twice | Check once → S7 C |
 | Off-topic or prompt injection | Polite refusal, then resume |
@@ -112,6 +113,10 @@ The prompt tells the model to **look the date up**, never compute it. Counting i
 | Keep the full slot list | Live call D13 rejected 11:00 although it was free | Fixed in v0.8; 11:00 booked in `6b56f180` |
 | Name and email preloaded from the lead (via API `user_data`) | A voice-spelled email was misheard (`daaritmetha...`) | Final call: email read back, a one-word "haan" |
 | Dates by lookup, not arithmetic | Wrong weekdays in a live call (D7) | v0.9 |
+| Every time with सुबह, दोपहर or शाम; every day with its date; "square feet" in full | "बारह बजे", "शनिवार को", and "sq ft" in call `cd97fa2d` (D14, D15, D19) | v1.0 |
+| One read-back for date, time and email; booking only after that yes | The booking tool started before the email question (D18) | v1.0 |
+| Say aloud that a requested time is free | 12:00 booked without confirming it was free (D16) | v1.0 Branch E and F |
+| Callbacks and opt-outs enforced in code | A promise to call back is worthless unless something schedules it; an opt-out must survive the next campaign | `post_call.ps1` + do-not-call list (v1.0) |
 | Devanagari, not Roman Hindi | Bolna and Sarvam pronunciation guidance | Natural TTS in all calls |
 | Callback, not live transfer | Matches the brief's example; no extra number | — |
 
@@ -126,7 +131,7 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 | Senior expert | "Bilkul, kya main hamare senior expert se aapko callback karva doon?" |
 | Unknown fact | "Iski verified jaankari abhi mere paas nahi hai. Main aapke liye sales team se confirm karva sakti hoon, karva doon?" |
 | Opt-out | "Theek hai, main aapki request abhi note kar rahi hoon, Mahima Palm Springs ki taraf se is baare mein aapko dobara call nahi kiya jayega." |
-| Busy | "Koi baat nahi, aapko kis time par call karna theek rahega?" |
+| Busy | "Koi baat nahi, aapko kab call karna theek rahega, kal subah, dopahar ya shaam?" |
 | Abuse | "Maaf kijiye agar meri call se aapko pareshani hui, main abhi call yahin khatam karti hoon." |
 | Silence | "Hello, kya aap mujhe sun pa rahe hain?" |
 | Off-topic | "Maaf kijiye, main sirf Mahima Palm Springs ke baare mein hi baat kar sakti hoon. Kya main project ke baare mein aapki koi aur madad karoon?" |
@@ -141,14 +146,15 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 | B: someone else | "Ji, ye call {customer_name} ji ke liye tha, unki Facebook par ki gayi property enquiry ke baare mein. Kya main unse kisi aur time par baat kar sakti hoon?" |
 | C: wrong number | "Maaf kijiye, hamare paas ye number Mahima Palm Springs ki Facebook enquiry mein aaya tha. Kya aapne haal hi mein Jaipur mein kisi flat ke liye enquiry ki thi?" |
 | D: not interested | "Samajh sakti hoon, bas ek baar jaanna chahoongi, kya aapne abhi flat lene ka plan chhod diya hai ya koi aur project dekh rahe hain?" |
+| E: scheduled callback | "Main Neha, Mahima Palm Springs ki AI assistant bol rahi hoon. Aapne kaha tha ki main aapko is time par dobara call karoon, kya abhi do minute baat karna theek rahega?" |
 
 ### Section 5: Main pitch
 | Step | Agent |
 |---|---|
 | Q1 | "Bahut achha, thank you. Aap Mahima Palm Springs mein teen BHK dekh rahe hain ya chaar BHK?" |
 | Q2 | "Badhiya. Hamara project Tonk Road par hai, Chokhi Dhani se sirf teen kilometre, Radha Swami Satsang Beas ke bilkul saamne. Ye location aapke liye theek rahegi?" |
-| Q3 | "Ye ek premium gated township hai, jismein spacious flats satrah sau paanch se chhabbis sau unnees sq. ft. tak ke hain. Kya ye size range aapki family ke hisaab se theek hai?" |
-| Q4 | "Possession January do hazaar sattaees mein due hai, aur abhi ka rate pachpan sau rupaye per sq. ft. hai. Kya ye aapke budget mein fit baithta hai?" |
+| Q3 | "Ye ek premium gated township hai, jismein spacious flats satrah sau paanch se chhabbis sau unnees square feet tak ke hain. Kya ye size range aapki family ke hisaab se theek hai?" |
+| Q4 | "Possession January do hazaar sattaees mein due hai, aur abhi ka rate paanch hazaar paanch sau rupaye per square foot hai. Kya ye aapke budget mein fit baithta hai?" |
 | Q5 | "Flat ki asli feel to site par aakar hi aati hai. Kya aap family ke saath ek site visit karna chahenge?" |
 
 | Objection | Agent |
@@ -165,8 +171,9 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 |---|---|
 | Q1 | "Badhiya. Aapke liye kaun sa din theek rahega site visit ke liye?" |
 | Q2 | "[visit_day] ko [offered_slots] ke slots available hain. Inmein se kaun sa time aapke liye theek rahega?" |
-| Q3 | "To main [visit_day] ko [selected_slot] ka slot aapke liye book kar doon?" |
-| Q4 | "Booking ki confirmation email par bhejoongi. Kya main usi email ID par bhej doon jo aapne Facebook form mein di thi, {customer_email}?" |
+| Q3 (single read-back) | "To main [visit_day] ko [selected_slot] ka site visit book kar doon, aur confirmation aapki email {customer_email} par bhej doon?" |
+| E: requested time free | "Ji, [visit_day] ko [selected_slot] ka slot bhi khaali hai. To main wahi book kar doon, aur confirmation aapki email {customer_email} par bhej doon?" |
+| F: requested time taken | "Maaf kijiye, us time ka slot khaali nahi hai, [visit_day] ko [offered_slots] ke slots khaali hain. Inmein se kaun sa theek rahega?" |
 | A: no slots | "Maaf kijiye, [visit_day] ko koi slot khaali nahi hai. Kya koi aur din aapke liye theek rahega?" |
 | B: slot taken | "Maaf kijiye, ye slot abhi abhi book ho gaya. Kya main usi din ka koi doosra available time dekhoon?" |
 | C: tool error | "Maaf kijiye, abhi system mein booking confirm nahi ho pa rahi hai. Maine aapka preferred time note kar liya hai, hamari team aapko call karke visit confirm karegi, theek hai?" |
@@ -177,7 +184,7 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 |---|---|
 | A: confirmed | "Aapka site visit [visit_day] ko [selected_slot] ke liye book ho gaya hai, aur confirmation aapki email par aa jayega. Mahima Palm Springs mein aapka intezaar rahega, aapka din achha rahe." |
 | B: pending | "Maine aapki preferred date aur time note kar liya hai, hamari team jaldi hi call karke site visit confirm karegi. Aapke time ke liye thank you, aapka din achha rahe." |
-| C: callback | "Theek hai, maine note kar liya hai, hamari team aapko [callback_time] call karegi. Aapke time ke liye thank you, aapka din achha rahe." |
+| C: callback | "Theek hai, main aapko [callback_time] phir se call karoongi. Aapke time ke liye thank you, aapka din achha rahe." |
 | D: senior expert | "Zaroor, maine aapki request note kar li hai, hamare senior expert aapko kal subah das baje se shaam paanch baje ke beech call karenge. Aapke time ke liye thank you, aapka din achha rahe." |
 | E: not interested | "Koi baat nahi, aapne apna time diya uske liye thank you. Aage kabhi Jaipur mein flat ki zaroorat ho to Mahima Palm Springs zaroor yaad rakhiyega, aapka din achha rahe." |
 | F: wrong number | "Maaf kijiye, shayad galat number lag gaya. Aapko pareshan karne ke liye sorry, aapka din achha rahe." |
@@ -188,8 +195,8 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 |---|---|
 | 1 Location | "Hamara project Tonk Road, Jaipur par hai, Chokhi Dhani se sirf teen kilometre, Radha Swami Satsang Beas ke bilkul saamne." |
 | 2 Configurations | "Ismein teen BHK aur chaar BHK ke spacious flats hain." |
-| 3 Size | "Flats satrah sau paanch se chhabbis sau unnees sq. ft. tak ke hain. Exact floor plan aapko sales team ya site visit par mil jayega." |
-| 4 Rate | "Abhi ka rate pachpan sau rupaye per sq. ft. hai." |
+| 3 Size | "Flats satrah sau paanch se chhabbis sau unnees square feet tak ke hain. Exact floor plan aapko sales team ya site visit par mil jayega." |
+| 4 Rate | "Abhi ka rate paanch hazaar paanch sau rupaye per square foot hai." |
 | 5 Total price* | "Total price flat ke exact size aur baaki charges par depend karta hai, jo mere paas confirmed nahi hain. Official cost sheet hamare senior expert aapko de denge." |
 | 6 Possession | "Possession January do hazaar sattaees mein due hai." |
 | 7 Discount* | "Abhi mere paas kisi discount ya payment plan ki confirmed jaankari nahi hai." |
@@ -199,7 +206,7 @@ The runtime prompt uses Devanagari. This copy is for readers and is **not** past
 | 11 How you got my number | "Aapne Facebook par Mahima Palm Springs ke ad par enquiry form bhara tha, usi enquiry ke liye ye call hai." |
 | 12 Family on the visit | "Haan bilkul, aap family ke saath site visit par aa sakte hain." |
 | 13 Visit timings | "Main aapki preferred date par available slots abhi check kar sakti hoon, aapke liye kaun sa din theek rahega?" |
-| 14 Investment* | "Main future price ya return ke baare mein koi promise nahi kar sakti, abhi ka rate pachpan sau rupaye per sq. ft. hai." |
+| 14 Investment* | "Main future price ya return ke baare mein koi promise nahi kar sakti, abhi ka rate paanch hazaar paanch sau rupaye per square foot hai." |
 | 15 Construction* | "Possession January do hazaar sattaees mein due hai, construction ki latest jaankari mere paas confirmed nahi hai." |
 
 \* Unverified topic: the question is noted, and sales team confirmation is offered once per call.
