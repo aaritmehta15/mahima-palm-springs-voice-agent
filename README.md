@@ -80,7 +80,7 @@ evidence/        recording, transcript, Loom, screenshots
 3. Add post-call extractions: [configuration/post_call_extraction.md](configuration/post_call_extraction.md).
 4. Test in four rounds to fit a $5 credit budget: static desk check (done), one voice-check call, one end-to-end booking call (the recording), then regression. See [tests/evaluation_rubric.md](tests/evaluation_rubric.md).
 
-**Current results:** Round 1 static check: 15 of 15 core scenarios pass after fixing 3 defects. Live rounds have not been run yet. See [tests/test_results.md](tests/test_results.md).
+**Current results:** 4 live calls, $0.87 spent in total. The final call (`6b56f180`, prompt v0.8) scored **98 of 100** and created a **real, confirmed Cal.com booking**. 13 defects were found across static and live testing and fixed through prompt versions v0.2 to v0.8; each is traced in [tests/test_results.md](tests/test_results.md) and [prompts/prompt_change_log.md](prompts/prompt_change_log.md).
 
 No API keys, phone numbers or personal emails are stored in this repository.
 

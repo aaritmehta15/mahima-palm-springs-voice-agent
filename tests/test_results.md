@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 3 (Round 2; Round 3 attempts 1 and 2).
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 4 (Round 2; Round 3 attempts 1 to 3). Total live spend: $0.870.
 
 ## 1. Run summary
 
@@ -13,14 +13,14 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | 2. Voice check | v0.4.1 | 2026-11-17 | 1 live call (119 s, $0.120), execution `6d1ec…` | **LIVE PASS, 89 of 100**, no critical failure; 3 defects (D4–D6) fixed in v0.5 |
 | 3. Booking end to end, attempt 1 | v0.5 | 2026-11-17 | 1 live call, execution `ec16fc4c…` | **LIVE FAIL**: wrong dates (D7), possible unverified slot (D9, logs pending), blank variables (D4); booking honesty held: no false confirmation, closed as pending. Not usable as the submission recording |
 | 3. Booking end to end, attempt 2 | v0.7 | 2026-11-17 | 1 live call, execution `9a476680…`, 300 s, $0.300 | **LIVE PASS, 86 of 100, real booking created** (Cal.com: Confirmed, Sat 21 Nov 10:00 to 10:30 IST). Slots offered (9:00, 9:30, 10:00) matched real Cal.com availability; the slot was read back; "book ho gaya" was said only after the booking succeeded. Defects D4 (blank variables again), D12, D13; the email was captured by voice and misheard |
-| 3. Booking end to end, attempt 3 (API call with user_data) | v0.8 | — | — | NOT RUN |
+| 3. Booking end to end, attempt 3 (API call with user_data) | v0.8 | 2026-11-17 | 1 live call, execution `6b56f180…`, 172 s, $0.180 | **LIVE PASS, 98 of 100: SUBMISSION CALL.** Greeted by name, full flow, real slots, accepted 11:00 from the full result (D13 fixed), preloaded email confirmed, real booking Confirmed in Cal.com (Sat 21 Nov, 11:00 to 11:30), agent ended the call |
 | 4. Regression | — | — | Critical cases after fixes | NOT RUN |
 
 ## 2. Core scenarios (T01–T15)
 
 | Core | Test ID | Scenario | Round 1 (STATIC) trace through prompt v0.3 | Static | Live result | Execution ID | Cost |
 |---|---|---|---|---|---|---|---|
-| T01 | TC-01 | Interested customer | S3 → S4 Q1 → S5 Q1 (BHK) → Q2 → Q3 → Q4 → Q5 → S6 Q1 `fetch` → Q2 → Q3 read-back (`pending_confirmation`) → Q4 email → `book` success (`confirmed`) → S7 A | PASS | NOT RUN | | |
+| T01 | TC-01 | Interested customer | S3 → S4 Q1 → S5 Q1 (BHK) → Q2 → Q3 → Q4 → Q5 → S6 Q1 `fetch` → Q2 → Q3 read-back (`pending_confirmation`) → Q4 email → `book` success (`confirmed`) → S7 A | PASS | **LIVE PASS (98)**: full flow to a real confirmed booking | `6b56f180…` | $0.180 |
 | T02 | TC-02 | Busy | Busy handler, callback time asked once → S7 C; no facts spoken | PASS | **LIVE PASS** (busy mid-pitch: callback asked once, closed, agent hung up) | `6d1ec…` | $0.120 (whole call) |
 | T03 | TC-06 | Wrong number | S3 → S4 Branch C (one clarification) → S7 F; no details shared | PASS | NOT RUN | | |
 | T04 | TC-04 | Not interested | S4 Q1 → Branch D (one probe) → S7 E. **D2:** "not interested" said during the greeting was not routed; fixed | PASS after fix | NOT RUN | | |
@@ -29,8 +29,8 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | T07 | TC-41 | Asks possession | FAQ 6: due January 2027; FAQ 16 forbids construction claims | PASS | NOT RUN | | |
 | T08 | TC-11 | Amenities | FAQ 8 confirms no amenity. **D1:** FAQ did not offer sales team confirmation or note the question; fixed in the FAQ rules block | PASS after fix | **LIVE PASS**: no pool claimed; standard line plus sales team offer; resumed correctly after "nahi" | `6d1ec…` | same call |
 | T09 | TC-14 | Discount | FAQ 7, no discount invented. Same defect D1; fixed | PASS after fix | NOT RUN | | |
-| T10 | TC-23 | Wants site visit early | Pitch Routing: visit request → S6 Q1 directly; date resolved with `{current_date}` | PASS | NOT RUN | | |
-| T11 | TC-25 | Requested slot unavailable | S6 Q2: not in tool result → says not available, offers returned slots; no slots → Branch A | PASS | NOT RUN | | |
+| T10 | TC-23 | Wants site visit early | Pitch Routing: visit request → S6 Q1 directly; date resolved with `{current_date}` | PASS | **LIVE PASS**: \"Saturday ikkees November\" → availability tool → real slots | `6b56f180…` | same call |
+| T11 | TC-25 | Requested slot unavailable | S6 Q2: not in tool result → says not available, offers returned slots; no slots → Branch A | PASS | **LIVE PASS** after the v0.8 fix: 11:00 (not among the spoken slots, but in the tool result) accepted and booked. Earlier attempt (`9a476680…`) wrongly rejected it (D13) | `6b56f180…` | same call |
 | T12 | TC-27 | Booking tool fails | Tool rules: max one retry → Branch C → `pending_confirmation` → S7 B; "booked" forbidden | PASS | NOT RUN | | |
 | T13 | TC-21 | Senior expert | Section 2 handler → S7 D ("request note kar li hai", 10 to 5 window); no transfer promised | PASS | NOT RUN | | |
 | T14 | TC-31 | Opt-out | Section 2 handler, immediate → S7 G; `opted_out` = yes; no persuasion | PASS | NOT RUN | | |
@@ -47,9 +47,9 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | D9 | Round 3 attempt 1 | "Monday gyarah baje" → "slot available hai". **Confirmed from the execution JSON: no tool was invoked in the whole call** (`tool_call_logs: []`), so every slot statement was invented. **Critical failure CF5** | v0.6 rule (fresh availability check per day) + v0.7 (real tool names and parameter formats; tool error ≠ no slots) | Pending live re-test |
 | D11 | Raw logs | The prompt referenced tools by the wrong names and wrong parameters (`preferred_date` instead of `start` and `end`; `book_calendar_slot` instead of `book_appointment`) | v0.7 | Pending live re-test |
 | D10 | Round 3 attempt 1 | Agent said "कृपया" twice and repeated a line | v0.6: banned formal words listed in Devanagari | Pending |
-| D12 | Round 3 attempt 2 | With `customer_name` blank, the answer "main Aarisht bol raha hoon" was routed to S4 Branch B (someone else answered) | v0.8: if `{customer_name}` is blank, treat the answerer as the customer; never route to Branch B because of a heard name | STATIC PASS |
-| D13 | Round 3 attempt 2 | The customer asked for 11:00; the agent said it was not available after offering only 9:00, 9:30 and 10:00 (11:00 was very likely in the full tool result) | v0.8: keep the full slot list; reject a time only if it is missing from the full result | Pending live re-test |
-| D4 | Round 2 live; repeated in Round 3 attempts 1 and 2 (dashboard test calls ignore Variables defaults) | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **Open, blocking Round 3** |
+| D12 | Round 3 attempt 2 | With `customer_name` blank, the answer "main Aarisht bol raha hoon" was routed to S4 Branch B (someone else answered) | v0.8: if `{customer_name}` is blank, treat the answerer as the customer; never route to Branch B because of a heard name | **LIVE PASS** (`6b56f180…`: greeted by name, correct routing) |
+| D13 | Round 3 attempt 2 | The customer asked for 11:00; the agent said it was not available after offering only 9:00, 9:30 and 10:00 (11:00 was very likely in the full tool result) | v0.8: keep the full slot list; reject a time only if it is missing from the full result | **LIVE PASS** (`6b56f180…`) |
+| D4 | Round 2 live; repeated in Round 3 attempts 1 and 2 (dashboard test calls ignore Variables defaults) | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **RESOLVED**: the final call used `POST /call` with `user_data`; the name and email arrived (`6b56f180…`) |
 | D5 | Round 2 live | The transcriber heard "Aarit" as "आरेन्द्र", and the agent addressed the customer by that misheard name | v0.5: address only by `{customer_name}`, otherwise "आप"; never use a name heard on the call | STATIC PASS; live re-test pending |
 | D6 | Round 2 live | "Teen BHK, rate kya hai?" got rate + sizes + floor plan + "teen BHK, sahi hai?" (4 sentences, re-confirmation) | v0.5: answer only what was asked, in one sentence; never re-confirm what the customer said | STATIC PASS; live re-test pending |
 | D3 | Round 1, T05 | The S4 Q1 instruction said a permission check happens at S5 Q1, but S5 Q1 has no permission check | The question is now treated as permission, and the call follows Pitch Routing (v0.3) | STATIC PASS |
@@ -98,3 +98,16 @@ Overall: **FAIL** (critical: invented slot availability, wrong dates). Cost $0.2
 | Bolna "Function tools" panel | Showed "No tools invoked" and `tool_call_logs: []` despite a real booking. That panel is not reliable evidence; the Cal.com booking is the evidence |
 
 Score: Factual 100, Flow 75, Hinglish 90, Tools 85, Naturalness 75 → **86.25, PASS**, zero critical failures.
+
+## 8. Round 3 attempt 3: submission call (execution `6b56f180…`, prompt v0.8)
+
+| Dimension | Score | Notes |
+|---|---|---|
+| Factual correctness (25) | 100 | All facts correct, in words; nothing invented |
+| Flow adherence (25) | 100 | Every stage in order; no detours, no repeated questions |
+| Hinglish quality (20) | 95 | Natural; feminine forms; "ग्यारह बजे" lacked "सुबह" |
+| Tool and booking correctness (20) | 100 | Real slots; read-back; preloaded email confirmed; booked only after success; Cal.com Confirmed |
+| Naturalness (10) | 90 | Short turns; the email was read out as a raw address string |
+| **Weighted** | **98** | **PASS**, zero critical failures |
+
+Known remaining issues (documented, not blocking): weekday-to-date conversion is unreliable when the customer gives only a weekday (D7; mitigated in the demo by the customer saying the date); Bolna's tool panel does not show tool invocations; Bolna's call summary misstated the rate as 5,550.

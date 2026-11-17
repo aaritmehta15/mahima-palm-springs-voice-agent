@@ -2,7 +2,9 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
-## v0.8: Fixes from the first real booking (2026-11-17)
+## v0.8: Fixes from the first real booking (2026-11-17), verified live
+
+**Verification:** execution `6b56f180…` (API call with `user_data`) passed with 98 of 100: the name was used, 11:00 was accepted from the full slot list, and a real booking was Confirmed in Cal.com. **v0.8 is the submitted prompt.**
 
 Trigger: execution `9a476680…` created a real Cal.com booking (Round 3 attempt 2). See D12 and D13 in [tests/test_results.md](../tests/test_results.md).
 

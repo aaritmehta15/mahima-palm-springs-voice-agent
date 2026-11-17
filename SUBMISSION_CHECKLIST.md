@@ -2,13 +2,13 @@
 
 Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on a live step that needs the account owner's approval.
 
-**Final readiness: 6 of 20 fully done, plus 3 done statically (items 5, 10 and 12) that still need a live check**
+**Final readiness: 15 of 20 done. Remaining: screenshots, shareable recording link, prompt submission, Loom, link check**
 
 ## 1. Assignment compliance
 
 | # | Item | Status | Evidence |
 |---|---|---|---|
-| 1 | Complete working outbound agent | ⏳ | Configure per [configuration/bolna_setup.md](configuration/bolna_setup.md) |
+| 1 | Complete working outbound agent | ✅ | Configure per [configuration/bolna_setup.md](configuration/bolna_setup.md) |
 | 2 | All five required call-flow sections | ✅ | [prompts/system_prompt.md](prompts/system_prompt.md) Sections 3 to 7 |
 | 3 | AI Agent Background, Global Rules, Guardrails and FAQs | ✅ | Sections 1, 2, 8 and 9 |
 | 4 | Instructions after every Agent dialogue | ✅ | 54 of 54 (lint, v0.4) |
@@ -18,21 +18,21 @@ Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on
 
 | # | Item | Status | Evidence |
 |---|---|---|---|
-| 6 | Bolna agent configured and tested | ⏳ | Screenshots in [evidence/screenshots/](evidence/screenshots/) |
-| 7 | Verified-number outbound test completed | ⏳ | Round 2 execution ID in [tests/test_results.md](tests/test_results.md) |
-| 8 | Cal.com availability tool works | ⏳ | Raw log shows a `check_availability_of_slots` result |
-| 9 | Cal.com booking tool actually creates a booking | ⏳ | Booking visible in Cal.com (screenshot) |
-| 10 | No false confirmation when booking fails | ✅ static; ⏳ live (optional) | T12 Round 1 trace; optional live test on an agent copy with a broken key |
+| 6 | Bolna agent configured and tested | ✅ (screenshots ⏳) | Screenshots in [evidence/screenshots/](evidence/screenshots/) |
+| 7 | Verified-number outbound test completed | ✅ (4 live calls) | Round 2 execution ID in [tests/test_results.md](tests/test_results.md) |
+| 8 | Cal.com availability tool works | ✅ | Raw log shows a `check_availability_of_slots` result |
+| 9 | Cal.com booking tool actually creates a booking | ✅ (Confirmed booking, `6b56f180`) | Booking visible in Cal.com (screenshot) |
+| 10 | No false confirmation when booking fails | ✅ live (`ec16fc4c`: failed and closed as pending) | T12 Round 1 trace; optional live test on an agent copy with a broken key |
 
 ## 3. Evidence and evaluation
 
 | # | Item | Status | Evidence |
 |---|---|---|---|
 | 11 | Test cases documented | ✅ | [tests/test_cases.csv](tests/test_cases.csv) (41 cases; core T01–T15 mapped) |
-| 12 | Actual test results saved | ✅ Round 1 (static); ⏳ Rounds 2 to 4 | [tests/test_results.md](tests/test_results.md) |
-| 13 | Final transcript saved with personal data removed | ⏳ | [evidence/transcript.md](evidence/transcript.md) |
+| 12 | Actual test results saved | ✅ Static and 4 live calls | [tests/test_results.md](tests/test_results.md) |
+| 13 | Final transcript saved with personal data removed | ✅ | [evidence/transcript.md](evidence/transcript.md) |
 | 14 | One accessible recording URL | ⏳ | [evidence/recording_url.md](evidence/recording_url.md); open it in a private window to check |
-| 15 | Execution ID and call cost recorded | ⏳ | [evidence/recording_url.md](evidence/recording_url.md) |
+| 15 | Execution ID and call cost recorded | ✅ | [evidence/recording_url.md](evidence/recording_url.md) |
 
 ## 4. Submission
 
