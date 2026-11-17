@@ -10,7 +10,7 @@ Built on **Bolna** with no custom code. This repository is the submission packag
 |---|---|
 | **The prompt used** | [prompts/system_prompt.md](prompts/system_prompt.md) |
 | Call flow, state model, Roman reading copy | [prompts/conversation_flow.md](prompts/conversation_flow.md) |
-| Test cases (40) | [tests/test_cases.csv](tests/test_cases.csv) |
+| Test cases (41; core T01–T15) | [tests/test_cases.csv](tests/test_cases.csv) |
 | Evaluation rubric | [tests/evaluation_rubric.md](tests/evaluation_rubric.md) |
 | Test results | [tests/test_results.md](tests/test_results.md) |
 | Call recording | [evidence/recording_url.md](evidence/recording_url.md) |
@@ -51,7 +51,9 @@ Webhooks can push the same payload in real time. They aren't needed for this dem
 | Hinglish dialogue in Devanagari, with English words like flat, price and site visit kept in English | Better Sarvam TTS pronunciation than Roman Hindi |
 | Facts whitelist | Only the five facts from the brief are spoken; everything else goes to a senior expert callback |
 | No total price calculation | Area basis and extra charges are unknown, so any total would mislead |
-| `[visit_status]`: requested, pending_confirmation, booked, declined | The agent can say "booked" only after the booking tool succeeds |
+| Three visit states: `not_requested`, `pending_confirmation`, `confirmed` | The agent can say "booked" only after the booking tool succeeds; a false confirmation is a critical failure |
+| One light qualification question (3 BHK or 4 BHK), then pitch facts as a menu | Answers questions immediately instead of forcing a questionnaire |
+| One standard line for unknowns: "इसकी verified जानकारी अभी मेरे पास नहीं है..." | Honest, consistent deferral to the sales team |
 | Slots come only from the calendar tool, up to three, then read back before booking | No invented times and no accidental bookings |
 | Name and email preloaded from the lead form and confirmed | Avoids spelling an email by voice, the most common failure |
 | Neha says she is an AI assistant in the introduction | Honest, and avoids a trust break later |
@@ -76,7 +78,9 @@ evidence/        recording, transcript, Loom, screenshots
 1. Set up Cal.com: [configuration/booking_setup.md](configuration/booking_setup.md).
 2. Create the Bolna agent and paste the prompt: [configuration/bolna_setup.md](configuration/bolna_setup.md).
 3. Add post-call extractions: [configuration/post_call_extraction.md](configuration/post_call_extraction.md).
-4. Run the tests in [tests/](tests/) using the web test first, then one phone call.
+4. Test in four rounds to fit a $5 credit budget: static desk check (done), one voice-check call, one end-to-end booking call (the recording), then regression. See [tests/evaluation_rubric.md](tests/evaluation_rubric.md).
+
+**Current results:** Round 1 static check: 15 of 15 core scenarios pass after fixing 3 defects. Live rounds have not been run yet. See [tests/test_results.md](tests/test_results.md).
 
 No API keys, phone numbers or personal emails are stored in this repository.
 
@@ -84,7 +88,7 @@ No API keys, phone numbers or personal emails are stored in this repository.
 
 - **Demo calendar.** The Cal.com availability is a demonstration schedule, not the real site office's timings.
 - **Facts.** Only the facts given in the brief are verified. Amenities, RERA, charges and payment plans are deliberately escalated.
-- **Callbacks.** "Senior expert will call back" is captured as an extraction field. No CRM is connected to act on it.
+- **Callbacks.** The "senior expert will call tomorrow 10 AM to 5 PM" line comes from the assessment's example script. The request is recorded as an extraction field only; no CRM or scheduler acts on it.
 - **Indian telecom compliance.** Real commercial outbound campaigns in India need DLT-registered numbers (140-series for promotional calls). The demo only calls the developer's own phone.
 
 ## Credits and licences

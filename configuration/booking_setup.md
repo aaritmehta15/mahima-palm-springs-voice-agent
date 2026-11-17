@@ -11,15 +11,18 @@ The agent checks **real** availability and creates **real** bookings using Bolna
 
 | Field | Value |
 |---|---|
-| Title | `Mahima Palm Springs Site Visit (Demo)` |
-| Duration | `60` minutes |
-| Location | `In person: Mahima Palm Springs, Tonk Road, Jaipur (demo)` |
+| Title | `Mahima Palm Springs – Assessment Demo Site Visit` |
+| Host | Your own account |
+| Duration | `30` minutes (demo assumption) |
+| Location | `In person: Mahima Palm Springs, Tonk Road, Jaipur` |
+| Description | `Illustrative calendar for an assessment demo; not an official property-company schedule.` |
 | Timezone | `Asia/Kolkata` |
 | Availability | Demo schedule, e.g. Mon–Sun, 10:00–18:00 IST |
 | Minimum notice | `2` hours, so the agent cannot book a slot that has already passed |
 | Booking questions | Name and email only (Cal.com defaults). Add no required custom fields, or the booking tool will fail |
 
-3. To test the "no slots" branch (TC-24), block out one full day in the availability, e.g. every Monday.
+3. **Connect Google Calendar** (or another supported calendar) under Cal.com → Settings → Calendars, so Cal.com checks real conflicts. Then a busy block you add in Google Calendar disappears from the slots the agent offers, which is a simple live test of T11.
+4. To test the "no slots" branch (TC-24), block out one full day in the availability, e.g. every Monday.
 
 ## 2. Cal.com API key
 
@@ -39,7 +42,7 @@ Agent → **Tools** tab → **Select functions**:
 |---|---|
 | Function name | `fetch_calendar_slots` |
 | Cal.com API key | (paste) |
-| Event type | `Mahima Palm Springs Site Visit (Demo)` |
+| Event type | `Mahima Palm Springs – Assessment Demo Site Visit` |
 | Timezone | `Asia/Kolkata` (must match the event) |
 | Description | `Fetch available site visit slots from the calendar. Call this only after the customer has agreed to a site visit and given a preferred date. Pass preferred_date in YYYY-MM-DD format, resolving words like kal or Sunday from current_date.` |
 | Pre-call message (Hindi) | `एक second, मैं उस दिन के available slots check कर रही हूँ।` |
@@ -51,7 +54,7 @@ Agent → **Tools** tab → **Select functions**:
 |---|---|
 | Function name | `book_calendar_slot` |
 | Cal.com API key | (paste) |
-| Event type | `Mahima Palm Springs Site Visit (Demo)` |
+| Event type | `Mahima Palm Springs – Assessment Demo Site Visit` |
 | Timezone | `Asia/Kolkata` |
 | Description | `Book a site visit slot only after the customer chose a slot returned by fetch_calendar_slots, the slot was read back and confirmed, and the customer's name and email are confirmed. Never book a time that was not returned by fetch_calendar_slots.` |
 | Pre-call message (Hindi) | `ठीक है, मैं आपका slot book कर रही हूँ, बस एक second।` |

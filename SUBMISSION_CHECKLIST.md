@@ -2,72 +2,69 @@
 
 Tick an item only when the evidence exists. ✅ means done; ⏳ means waiting on a live step that needs the account owner's approval.
 
-## A. What the assignment asks for
+**Final readiness: 6 of 20 fully done, plus 3 done statically (items 5, 10 and 12) that still need a live check**
 
-| # | Deliverable | Status | Evidence |
+## 1. Assignment compliance
+
+| # | Item | Status | Evidence |
 |---|---|---|---|
-| A1 | Agent built | ⏳ | Configure per [configuration/bolna_setup.md](configuration/bolna_setup.md); add screenshots to [evidence/screenshots/](evidence/screenshots/) |
-| A2 | Agent tested | ⏳ | [tests/test_results.md](tests/test_results.md) currently NOT RUN |
-| A3 | List of test cases | ✅ | [tests/test_cases.csv](tests/test_cases.csv) (40 cases) + [tests/evaluation_rubric.md](tests/evaluation_rubric.md) |
-| A4 | One call recording or audio URL | ⏳ | [evidence/recording_url.md](evidence/recording_url.md) |
-| A5 | The prompt used | ✅ | [prompts/system_prompt.md](prompts/system_prompt.md) v0.2. Re-confirm it matches what is pasted in Bolna before submitting |
-| A6 | Five-minute Loom | ⏳ | [evidence/loom_url.md](evidence/loom_url.md) (outline ready) |
+| 1 | Complete working outbound agent | ⏳ | Configure per [configuration/bolna_setup.md](configuration/bolna_setup.md) |
+| 2 | All five required call-flow sections | ✅ | [prompts/system_prompt.md](prompts/system_prompt.md) Sections 3 to 7 |
+| 3 | AI Agent Background, Global Rules, Guardrails and FAQs | ✅ | Sections 1, 2, 8 and 9 |
+| 4 | Instructions after every Agent dialogue | ✅ | 40 of 40 (lint) |
+| 5 | All spoken lines in natural Hinglish | ✅ static; ⏳ confirm by ear in Round 2 | Lint: 56 spoken lines, no formal Hindi |
 
-## B. Prompt format required by the assignment
+## 2. Working integrations
 
-| # | Requirement | Status |
-|---|---|---|
-| B1 | Greeting Message | ✅ Section 3 |
-| B2 | Introduction, context setting, good-time confirmation | ✅ Section 4 |
-| B3 | Main Pitch | ✅ Section 5 |
-| B4 | Site Visit Booking | ✅ Section 6 |
-| B5 | Conclusion | ✅ Section 7 |
-| B6 | AI Agent Background | ✅ Section 1 |
-| B7 | Global Rules | ✅ Section 2 |
-| B8 | Guardrails | ✅ Section 8 |
-| B9 | FAQs | ✅ Section 9 (16 entries) |
-| B10 | Key facts used correctly | ✅ [knowledge/mahima_project_facts.md](knowledge/mahima_project_facts.md) |
-| B11 | Hinglish, not formal Hindi | ✅ Lint pass; ⏳ confirm by ear in a test call |
-| B12 | `Instructions:` after every dialogue | ✅ 39 of 39 |
+| # | Item | Status | Evidence |
+|---|---|---|---|
+| 6 | Bolna agent configured and tested | ⏳ | Screenshots in [evidence/screenshots/](evidence/screenshots/) |
+| 7 | Verified-number outbound test completed | ⏳ | Round 2 execution ID in [tests/test_results.md](tests/test_results.md) |
+| 8 | Cal.com availability tool works | ⏳ | Raw log shows a `fetch_calendar_slots` result |
+| 9 | Cal.com booking tool actually creates a booking | ⏳ | Booking visible in Cal.com (screenshot) |
+| 10 | No false confirmation when booking fails | ✅ static; ⏳ live (optional) | T12 Round 1 trace; optional live test on an agent copy with a broken key |
 
-## C. Live steps, in order (each needs the owner's go-ahead)
+## 3. Evidence and evaluation
 
-1. ⏳ Create the Cal.com demo event and API key → [configuration/booking_setup.md](configuration/booking_setup.md)
-2. ⏳ Create the Bolna agent, paste the prompt and welcome message, set the voice stack → [configuration/bolna_setup.md](configuration/bolna_setup.md)
-3. ⏳ Add the two calendar tools; confirm the function names match the prompt
-4. ⏳ Add the 12 extractions → [configuration/post_call_extraction.md](configuration/post_call_extraction.md)
-5. ⏳ Take screenshots of each Bolna tab and the Cal.com event (blur the API keys)
-6. ⏳ Run all P1 test cases as **web calls**; record the results; fix the prompt and log the version
-7. ⏳ **One** approved phone call to your own number (TC-01) → recording and transcript
-8. ⏳ Fill in [evidence/recording_url.md](evidence/recording_url.md) and [evidence/transcript.md](evidence/transcript.md) (redacted)
-9. ⏳ Record the Loom using the outline → [evidence/loom_url.md](evidence/loom_url.md)
-10. ⏳ Cancel the test bookings and revoke the Cal.com API key after the assessment
+| # | Item | Status | Evidence |
+|---|---|---|---|
+| 11 | Test cases documented | ✅ | [tests/test_cases.csv](tests/test_cases.csv) (41 cases; core T01–T15 mapped) |
+| 12 | Actual test results saved | ✅ Round 1 (static); ⏳ Rounds 2 to 4 | [tests/test_results.md](tests/test_results.md) |
+| 13 | Final transcript saved with personal data removed | ⏳ | [evidence/transcript.md](evidence/transcript.md) |
+| 14 | One accessible recording URL | ⏳ | [evidence/recording_url.md](evidence/recording_url.md); open it in a private window to check |
+| 15 | Execution ID and call cost recorded | ⏳ | [evidence/recording_url.md](evidence/recording_url.md) |
 
-## D. Before every push
+## 4. Submission
+
+| # | Item | Status | Evidence |
+|---|---|---|---|
+| 16 | Prompt submitted separately | ⏳ | Paste or attach [prompts/system_prompt.md](prompts/system_prompt.md) (the text between the BEGIN and END markers) |
+| 17 | GitHub repository README complete | ✅ | [README.md](README.md); update the results line after the live rounds |
+| 18 | All secrets and personal details excluded | ✅ so far; re-check before the final push | See section 6 |
+| 19 | Five-minute Loom recorded | ⏳ | [evidence/loom_url.md](evidence/loom_url.md) (outline ready) |
+| 20 | All links tested before submission | ⏳ | Open every link in a private window |
+
+## 5. Live steps, in order (each needs the owner's go-ahead)
+
+1. ⏳ Cal.com: create the "Assessment Demo Site Visit" event (30 min, Asia/Kolkata), connect Google Calendar, create an API key → [configuration/booking_setup.md](configuration/booking_setup.md)
+2. ⏳ Bolna: create "Mahima Palm Springs – Lead Follow-up", paste the prompt and welcome message, set the voice stack, retries off, 5-minute cap → [configuration/bolna_setup.md](configuration/bolna_setup.md)
+3. ⏳ Add the two calendar tools; check that the function names match the prompt
+4. ⏳ Preview the voice; take screenshots of each tab (blur keys)
+5. ⏳ **Round 2:** one short voice-check call to your own number
+6. ⏳ Fix the prompt if needed → change log → static re-check (Round 4)
+7. ⏳ **Round 3:** one booking call (the submission recording); confirm in Cal.com
+8. ⏳ Add the extractions → [configuration/post_call_extraction.md](configuration/post_call_extraction.md); test them on the Round 3 transcript
+9. ⏳ Fill in the evidence files (redacted), including the execution ID and cost
+10. ⏳ Record the Loom; test all links; submit
+11. ⏳ After the assessment: cancel test bookings and revoke the Cal.com API key
+
+## 6. Before every push
 
 | Check | Command or action |
 |---|---|
-| No secrets | `git grep -nE "sk-|cal_live_|api[_-]?key"` returns nothing in project files |
-| No real phone numbers or emails | `git grep -nE "\+91[6-9][0-9]{9}|@gmail\.com"` returns only `.agents/` example data |
+| No secrets | `git grep -nE "sk-[A-Za-z0-9]{10}|cal_live_|bn-[a-f0-9]{16}"` finds nothing |
+| No real phone numbers or emails | `git grep -nE "\+91[6-9][0-9]{9}|@gmail\.com" -- ':!.agents'` finds nothing |
 | No audio or raw evidence | `git status` shows no `.wav`, `.mp3` or `evidence/raw/` |
 | References and brief not committed | `git ls-files` shows no `Refrences/` or `Assignment Instructions/` |
-| Results honest | No test is marked PASS without an execution ID |
-
-## E. Loom outline (5 minutes)
-
-| Time | Section | Talking points |
-|---|---|---|
-| 0:00 | Use case | Facebook lead → Hinglish call → booked site visit; what the brief asked for |
-| 0:40 | Setup | Bolna (gpt-4.1-mini, Deepgram multi-hi, Sarvam female voice), built-in Cal.com tools, why no custom code, demo calendar caveat |
-| 1:30 | Prompt design | Nine sections; Agent plus Instructions; facts whitelist and no totals; visit status states; one question per turn; objection limits; opt-out; AI honesty; Devanagari for TTS |
-| 2:45 | Demo | Play the recorded call; show the matching Cal.com booking and the Bolna extractions |
-| 3:45 | Testing | Test matrix, rubric with critical failures, what failed, and the prompt change log entries |
-| 4:30 | Learnings | Booking honesty needs explicit states; voice needs short turns; Devanagari vs Roman; what to improve next (CRM sync for callbacks, DLT numbers, verified fact sheet) |
-
-## F. Final submission package
-
-- [ ] GitHub repository link: https://github.com/aaritmehta15/mahima-palm-springs-voice-agent
-- [ ] Recording URL (from `evidence/recording_url.md`)
-- [ ] Loom URL (from `evidence/loom_url.md`)
-- [ ] Prompt: link to `prompts/system_prompt.md`, or paste it if the form asks for text
-- [ ] Repository access confirmed (public, or the reviewer added)
+| No AI co-author lines | `git log --format=%B` contains no Co-Authored-By lines |
+| Results honest | No `LIVE PASS` without an execution ID |

@@ -18,7 +18,10 @@ Dashboard → **Agents** → **Create agent** → choose a blank or custom agent
 
 | Field | Value |
 |---|---|
-| Agent name | `Mahima Palm Springs - Neha (Outbound)` |
+| Agent name | `Mahima Palm Springs – Lead Follow-up` |
+| Direction | Outbound |
+| Agent type | Conversation (single conversation task) |
+| Voice style | Warm, clear, professional |
 
 ## 2. Agent tab
 
@@ -75,7 +78,9 @@ If the dashboard assigns fixed names that cannot be changed, update the two name
 | `hangup_after_silence` | `20` s | Indian callers often pause to think |
 | `trigger_user_online_message_after` | `10` s | Must be less than `hangup_after_silence` |
 | `check_user_online_message` | `Hello, क्या आप मुझे सुन पा रहे हैं?` | Same line as the prompt's silence handler, so the wording stays consistent |
-| `call_terminate` (max duration) | `480` s (8 min) | Enough for pitch plus booking; caps cost |
+| `call_terminate` (max duration) | `300` s (5 min) | Enough for pitch plus booking, and protects the $5 test budget |
+| Retries | **Disabled** during testing | Avoids surprise repeat calls that use credit |
+| Concurrency | One call at a time | Testing only |
 | `call_hangup_message` | leave empty | The closing lines in Section 7 already end the call |
 | LLM-based call hangup ("hang up when the conversation ends") | `on` | The prompt's `# Ending the Call` rule tells the model to end after any Section 7 closing; this setting lets Bolna actually disconnect |
 | Voicemail detection | `on` | Avoids pitching to voicemail |
@@ -93,9 +98,13 @@ Configure the extractions in [post_call_extraction.md](post_call_extraction.md).
 
 | Step | How | Cost |
 |---|---|---|
-| 1 | **Web call or playground** in the dashboard, with `customer_name` = `Rahul` and `customer_email` = a test inbox | No telephony cost |
-| 2 | Run all P1 cases from [tests/test_cases.csv](../tests/test_cases.csv), and fix the prompt where they fail | No telephony cost |
-| 3 | **One** phone call to the developer's own number (TC-01) for the recorded demo, **only after explicit approval** | Telephony credit |
+| 1 | **Round 1 static desk check** of the core scenarios T01–T15 (already done; see [tests/test_results.md](../tests/test_results.md)) | Free |
+| 2 | **Preview the voice** in the Audio tab before any call | Free |
+| 3 | **Round 2:** one short call to your own verified number, checking pronunciation, Hinglish, delays, interruptions and hang-up | Small |
+| 4 | **Round 3:** one end-to-end booking call to your own number; confirm the booking appears in Cal.com. This call is the submission recording | Small |
+| 5 | **Round 4:** after any prompt fix, re-check the critical cases (static first; live only if credit remains) | Mostly free |
+
+**Budget: $5 of Bolna credit.** Check the balance after each call and record `total_cost` in the evidence. A web call or playground in the dashboard may be cheaper than a phone call, but it still uses LLM, STT and TTS credit.
 
 **Phone call settings:** recipient is the developer's own number in E.164 format (`+91XXXXXXXXXX`); `user_data` = `{"customer_name": "<dummy>", "customer_email": "<test inbox>", "timezone": "Asia/Kolkata"}`.
 
@@ -117,7 +126,7 @@ Copy the results into [evidence/](../evidence/) using the redaction rules there.
 
 ## 10. Compliance note
 
-Commercial outbound calls to Indian numbers require DLT-registered numbers: 140-series through Vobiz for promotional calls (see [.agents/references/india-compliance.md](../.agents/references/india-compliance.md)). This demo calls only the developer's own phone. A production rollout would need DLT registration, consent records from the Facebook lead form, and a do-not-call list fed by the `Opted Out` extraction.
+Commercial outbound calls to Indian numbers require DLT-registered numbers: 140-series through Vobiz for promotional calls (see [.agents/references/india-compliance.md](../.agents/references/india-compliance.md)). This demo calls only the developer's own verified phone. **Do not upload a list of Facebook leads or start a campaign.** A trial demonstration is not authorisation to run a production campaign. A production rollout would need DLT registration, consent records from the Facebook lead form, and a do-not-call list fed by the `Opted Out` extraction.
 
 ## 11. Configuration record (fill in after setup)
 

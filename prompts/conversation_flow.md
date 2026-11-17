@@ -10,7 +10,7 @@ flowchart TD
     G -->|Someone else| RB["S4 Branch B<br/>Ask better time"]
     G -->|Wrong number| RC["S4 Branch C<br/>Check enquiry once"]
 
-    I -->|Yes| P1["S5 Q1 Own use or investment?"]
+    I -->|Yes| P1["S5 Q1 Qualify: 3 BHK or 4 BHK?"]
     I -->|Busy| BA["S4 Branch A<br/>Capture callback time"]
     I -->|Not interested| BD["S4 Branch D<br/>One soft probe"]
     I -->|No enquiry made| RC
@@ -24,7 +24,9 @@ flowchart TD
     BD -->|Declines| C_NI["S7 Branch E<br/>Not interested close"]
 
     P1 --> P2["S5 Q2 Location"]
-    P2 --> P3["S5 Q3 Township, 3 and 4 BHK, size range"]
+    P1 -. asks price/size/possession .-> PR["Answer immediately<br/>(Pitch Routing), skip that fact later"]
+    PR --> P5
+    P2 --> P3["S5 Q3 Township + size range"]
     P3 --> P4["S5 Q4 Possession Jan 2027 + rate"]
     P4 --> P5["S5 Q5 Site visit?"]
     P2 -. objection .-> OBJ["S5 Objection Handling<br/>max 1 pivot each, 2 declines then close"]
@@ -56,6 +58,7 @@ flowchart TD
 | Trigger | Handler outcome |
 |---|---|
 | "Are you a robot or an AI?" | Truthful answer, then resume |
+| Question not in verified facts | Standard line: "Iski verified jaankari abhi mere paas nahi hai..." Offers sales team confirmation, notes the question, resumes |
 | Wants a human, customer care or senior expert | Confirm, then S7 Branch D (callback tomorrow 10 AM to 5 PM) |
 | Explicit opt-out | Acknowledge immediately, then S7 Branch G |
 | Busy mid-call | Ask callback time once, then S7 Branch C |
@@ -69,23 +72,19 @@ The prompt tracks `[visit_status]` so the agent never claims a booking that did 
 
 | State | Set when | What the agent may say | Closing used |
 |---|---|---|---|
-| *(empty)* | Before any visit discussion | No visit language | Any |
-| `requested` | Customer agrees to a site visit | "Let me find a slot" | S7 Branch B if the call ends here |
-| `pending_confirmation` | Slot read back, OR no slot found, OR tool error, OR email not captured | "Noted, our team will call to confirm." Never "booked" | S7 Branch B |
-| `booked` | **Only** when `book_calendar_slot` returns success in this call | "Your site visit is booked" | S7 Branch A |
-| `declined` | Customer does not want a visit | No visit language | S7 Branch E or C |
+| `not_requested` | Start of call; also if the customer declines a visit | No visit language | Any except A and B |
+| `pending_confirmation` | Customer wants a visit or gave a preferred date or time, but no successful booking yet (includes no slots, slot taken, tool error, email not captured) | "Noted, our team will call to confirm." Never "booked" | S7 Branch B |
+| `confirmed` | **Only** when `book_calendar_slot` returns success in this call | "Your site visit is booked" | S7 Branch A |
 
 ```mermaid
 stateDiagram-v2
-    [*] --> requested: agrees to visit
-    [*] --> declined: refuses visit
-    requested --> pending_confirmation: slot chosen and read back
-    requested --> pending_confirmation: no slots after 2 dates / tool error
-    pending_confirmation --> booked: book_calendar_slot success
-    pending_confirmation --> pending_confirmation: slot taken / email unclear / tool error
-    booked --> [*]
-    pending_confirmation --> [*]
-    declined --> [*]
+    [*] --> not_requested: call starts
+    not_requested --> pending_confirmation: wants a visit / gives preferred time
+    pending_confirmation --> confirmed: book_calendar_slot success
+    pending_confirmation --> pending_confirmation: no slots / slot taken / email unclear / tool error
+    not_requested --> [*]: declines or call ends
+    pending_confirmation --> [*]: S7 Branch B (pending close)
+    confirmed --> [*]: S7 Branch A (booked close)
 ```
 
 ## 3. Tool invocation rules
@@ -103,12 +102,14 @@ Each tool is retried at most once, with no loops. If it fails twice, the agent u
 |---|---|
 | Permission before pitch | The brief requires a good-time check. Respecting it also builds trust on cold-ish calls. |
 | Pitch split into four one-fact turns that each end with a question | Prevents a monologue, keeps turns at two sentences or fewer, and gathers requirements while pitching |
-| Discovery (own use or investment) first | Lets the agent understand intent before asking for a booking |
+| One light qualification question (3 BHK or 4 BHK) before the pitch; purpose only noted if volunteered | Understands intent without interrogating the customer |
+| Pitch facts are a menu, not a script | A price question is answered immediately; facts already shared are skipped |
+| One standard "verified information nahi hai" line for unknowns | Consistent, honest deferral that is easy to test |
 | Facts only from a whitelist | The brief supplies five facts. Everything else is escalated, so nothing is hallucinated. |
 | No totals | Area basis (carpet or super) and extra charges are unknown, so any total would be misleading |
 | Name and email preloaded from the Facebook lead form | Spelling an email by voice in Hinglish is the most common booking failure point |
 | AI disclosure in the introduction | Honest, matches Bolna's guidance, and avoids a trust break if the customer works it out later |
-| Callback instead of live transfer | Matches the example in the brief and needs no extra number |
+| Callback instead of live transfer | Matches the example in the brief and needs no extra number. The "tomorrow 10 AM to 5 PM" window comes from the assessment script; it is not a verified service commitment. The request is recorded through the post-call extraction |
 | One soft probe on "not interested", close after two declines | Persuasive but never pushy |
 | Explicit `pending_confirmation` state | Stops the LLM from saying "booked" when the tool did not confirm a booking |
 
@@ -121,6 +122,7 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 |---|---|
 | Asked if AI | "Ji, main Mahima Palm Springs ki AI assistant hoon, aur aapki enquiry par aapki madad ke liye call kar rahi hoon. Kya main aage baat jaari rakhoon?" |
 | Senior expert request | "Bilkul, kya main hamare senior expert se aapko callback karva doon?" |
+| Unknown question | "Iski verified jaankari abhi mere paas nahi hai. Main aapke liye sales team se confirm karva sakti hoon, karva doon?" |
 | Opt-out | "Theek hai, main aapki request abhi note kar rahi hoon, Mahima Palm Springs ki taraf se is baare mein aapko dobara call nahi kiya jayega." |
 | Busy | "Koi baat nahi, aapko kis time par call karna theek rahega?" |
 | Abuse | "Maaf kijiye agar meri call se aapko pareshani hui, main abhi call yahin khatam karti hoon." |
@@ -142,9 +144,9 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 ### Section 5: Main pitch
 | Step | Agent (Roman Hinglish) |
 |---|---|
-| Q1 | "Thank you. Aap flat apne rehne ke liye dekh rahe hain ya investment ke liye?" |
+| Q1 | "Bahut achha, thank you. Aap Mahima Palm Springs mein teen BHK dekh rahe hain ya chaar BHK?" |
 | Q2 | "Badhiya. Hamara project Tonk Road par hai, Chokhi Dhani se sirf teen kilometre, Radha Swami Satsang Beas ke bilkul saamne. Ye location aapke liye theek rahegi?" |
-| Q3 | "Ye ek premium gated township hai jismein teen aur chaar BHK ke spacious flats hain, satrah sau paanch se chhabbis sau unnees sq. ft. tak. Aapko teen BHK chahiye ya chaar BHK?" |
+| Q3 | "Ye ek premium gated township hai, jismein spacious flats satrah sau paanch se chhabbis sau unnees sq. ft. tak ke hain. Kya ye size range aapki family ke hisaab se theek hai?" |
 | Q4 | "Possession January do hazaar sattaees mein due hai, aur abhi ka rate pachpan sau rupaye per sq. ft. hai. Kya ye aapke budget mein fit baithta hai?" |
 | Q5 | "Flat ki asli feel to site par aakar hi aati hai. Kya aap family ke saath ek site visit karna chahenge?" |
 
@@ -175,7 +177,7 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 | A, booked | "Aapka site visit [visit_day] ko [selected_slot] ke liye book ho gaya hai, aur confirmation aapki email par aa jayega. Mahima Palm Springs mein aapka intezaar rahega, aapka din achha rahe." |
 | B, pending | "Maine aapki preferred date aur time note kar liya hai, hamari team jaldi hi call karke site visit confirm karegi. Aapke time ke liye thank you, aapka din achha rahe." |
 | C, callback | "Theek hai, maine note kar liya hai, hamari team aapko [callback_time] call karegi. Aapke time ke liye thank you, aapka din achha rahe." |
-| D, senior expert | "Zaroor, hamare senior expert aapko kal subah das baje se shaam paanch baje ke beech call karenge. Aapke time ke liye thank you, aapka din achha rahe." |
+| D, senior expert | "Zaroor, maine aapki request note kar li hai, hamare senior expert aapko kal subah das baje se shaam paanch baje ke beech call karenge. Aapke time ke liye thank you, aapka din achha rahe." |
 | E, not interested | "Koi baat nahi, aapne apna time diya uske liye thank you. Aage kabhi Jaipur mein flat ki zaroorat ho to Mahima Palm Springs zaroor yaad rakhiyega, aapka din achha rahe." |
 | F, wrong number | "Maaf kijiye, shayad galat number lag gaya. Aapko pareshan karne ke liye sorry, aapka din achha rahe." |
 | G, opted out | "Pareshani ke liye maafi chahti hoon, aapka din achha rahe." |
@@ -190,12 +192,12 @@ The runtime prompt uses Devanagari for better Sarvam TTS pronunciation. This is 
 | 2 | Customer | Haan, boliye. |
 | 3 | Neha | Main Neha, Mahima Palm Springs ki AI assistant bol rahi hoon... kya abhi do minute baat karna theek rahega? |
 | 4 | Customer | Haan, bataiye. |
-| 5 | Neha | Thank you. Aap flat apne rehne ke liye dekh rahe hain ya investment ke liye? |
-| 6 | Customer | Rehne ke liye. |
+| 5 | Neha | Bahut achha, thank you. Aap Mahima Palm Springs mein teen BHK dekh rahe hain ya chaar BHK? |
+| 6 | Customer | Teen BHK, rehne ke liye. |
 | 7 | Neha | Badhiya. Hamara project Tonk Road par hai... Ye location aapke liye theek rahegi? |
 | 8 | Customer | Haan, theek hai. |
-| 9 | Neha | ...teen aur chaar BHK... Aapko teen BHK chahiye ya chaar BHK? |
-| 10 | Customer | Teen BHK. Total kitna padega? |
+| 9 | Neha | Ye ek premium gated township hai... Kya ye size range aapki family ke hisaab se theek hai? |
+| 10 | Customer | Haan. Total kitna padega? |
 | 11 | Neha | Total price flat ke exact size aur baaki charges par depend karta hai... Possession January do hazaar sattaees mein due hai, aur abhi ka rate pachpan sau rupaye per sq. ft. hai. Kya ye aapke budget mein fit baithta hai? |
 | 12 | Customer | Haan, chalega. |
 | 13 | Neha | Flat ki asli feel to site par aakar hi aati hai. Kya aap family ke saath ek site visit karna chahenge? |

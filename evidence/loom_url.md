@@ -11,9 +11,11 @@
 
 | Time | Topic | What is shown |
 |---|---|---|
-| 0:00 to 0:40 | Use case and goal | Brief: Facebook lead, Hinglish outbound call, site visit booking |
-| 0:40 to 1:30 | Setup and design choices | Bolna stack (gpt-4.1-mini, Deepgram multi-hi, Sarvam), Cal.com built-in tools, why no custom code, demo calendar |
-| 1:30 to 2:45 | Prompt walkthrough | Nine sections, Agent and Instructions convention, verified facts whitelist, visit status states, objection rules, guardrails |
-| 2:45 to 3:45 | Call demo | Recorded call, plus the matching booking in Cal.com |
-| 3:45 to 4:30 | Testing | Test matrix, rubric, critical failures, what failed and how the prompt changed |
-| 4:30 to 5:00 | Learnings | Devanagari vs Roman for TTS, booking honesty, voice turn discipline, what to improve next |
+| 00:00 to 00:40 | Problem and requirements | Facebook lead follow-up; the expected outcome is a confirmed site visit |
+| 00:40 to 01:20 | Architecture and stack | Why Bolna (built-in Indian voice stack and Cal.com tools), why Cal.com, why no custom backend; demo calendar caveat |
+| 01:20 to 02:20 | Prompt design | Nine sections, Agent plus Instructions, single facts section, Pitch Routing (branching), standard verification line, three visit states, guardrails |
+| 02:20 to 03:35 | Live call and booking | Play the recorded call; show the booking appearing in Cal.com and the `extracted_data` |
+| 03:35 to 04:25 | Testing and evaluation | Four-round strategy within the $5 budget, rubric (85 percent and zero critical failures), actual results, defects found and fixed |
+| 04:25 to 05:00 | Learning and improvements | One real challenge and its fix (e.g. a Round 1 defect or something from the live call); next steps |
+
+Keep the technology talk short. The evaluator should **hear the agent** and **see the prompt-engineering decisions**.

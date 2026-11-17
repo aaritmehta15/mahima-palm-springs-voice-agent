@@ -2,6 +2,38 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.3: Plan alignment + Round 1 static fixes (static-checked, not yet live-tested)
+
+### Design changes
+| # | Change | Reason |
+|---|---|---|
+| 1 | `[visit_status]` reduced from four values to three: `not_requested`, `pending_confirmation`, `confirmed` | Simpler for the model to track and easier to evaluate; matches the extraction field. Agreeing to a visit, giving a preferred time, or a tool failure all mean `pending_confirmation` until the tool succeeds |
+| 2 | S5 Q1 is now a light 3 BHK or 4 BHK qualification; the "own use or investment" question is removed (purpose is only noted if volunteered); S5 Q3 no longer asks for the configuration again | One qualification question instead of two, so the call is less like an interrogation |
+| 3 | New `# Pitch Routing` rules block: pitch facts are a menu; any question is answered immediately; facts already shared are skipped | Branching instead of a rigid questionnaire |
+| 4 | New standard fact verification line in Section 2: "इसकी verified जानकारी अभी मेरे पास नहीं है। मैं आपके लिए sales team से confirm करवा सकती हूँ, करवा दूँ?", plus a `[unknown_questions]` variable | One consistent, honest response to unknowns |
+| 5 | S7 Branch D now says the request has been noted, and its instructions forbid any extra promise | The "10 AM to 5 PM" window comes from the assessment script, not a verified service commitment; the request is recorded through the post-call extraction |
+
+### Round 1 static desk-check fixes
+See [tests/test_results.md](../tests/test_results.md), defects D1 to D3: FAQ unknowns now offer sales team confirmation; a greeting-time "not interested" is routed; the intro's question-handling instruction is corrected.
+
+### Pre-paste review checklist (v0.3)
+| Check | Result | Evidence |
+|---|---|---|
+| Every scripted Agent dialogue has Instructions immediately after it | ✅ | Lint: 40 of 40, none missing |
+| All spoken agent dialogues are Hinglish | ✅ | Lint: every spoken line contains Devanagari; no formal Hindi words |
+| All required sections included | ✅ | Lint: Sections 1 to 9 present |
+| All property facts accurate | ✅ | Every fact string matches [knowledge/mahima_project_facts.md](../knowledge/mahima_project_facts.md) |
+| Every unknown fact handled safely | ✅ | Standard verification line plus FAQ rule (D1 fix); lint finds no amenity, lakh or crore words |
+| Responses conversational rather than robotic | ✅ static; ⏳ by ear | Two sentences or fewer per turn; one acknowledgement maximum; needs a Round 2 live check |
+| Customer objections handled gracefully | ✅ | Six objections, one pivot each, close after two declines |
+| The agent can skip irrelevant questions | ✅ | Pitch Routing block; S5 Q5 skipped if a visit was already asked for |
+| Booking requires successful tool execution | ✅ | `confirmed` only on `book_calendar_slot` success; S7 A used only when confirmed |
+| The agent can recover from tool failure | ✅ | S6 Branch C, one retry maximum, ends `pending_confirmation` |
+| Refusal and opt-out are respected | ✅ | S4 Branch D, a single probe; opt-out handler is immediate |
+| The call can end without forcing a site visit | ✅ | S7 B, C, D, E, F and G |
+
+Status: ready to paste into Bolna. Live behaviour is still unverified (Rounds 2 and 3).
+
 ## v0.2: Phase E static review fixes (design-time, not yet tested)
 
 Found by manual review of v0.1 against the Bolna Cal.com tool contract and Bolna call-hangup behaviour. No live tests were run.

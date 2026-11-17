@@ -45,6 +45,10 @@ Create a voice AI agent for **Mahima Palm Springs** that calls a customer who en
 | Persona | Neha, female | Hindi verb forms stay feminine throughout |
 | Name and email for booking | Preloaded from the Facebook lead form as `{customer_name}` and `{customer_email}`, confirmed on the call | Capturing an email by voice is the most error-prone step |
 | Pricing answers | Rate per sq. ft. and size range only; no totals | Area basis and extra charges are not verified |
+| Visit states | `not_requested`, `pending_confirmation`, `confirmed` | A false booking confirmation is a critical failure |
+| Qualification | One question: 3 BHK or 4 BHK; purpose only noted if volunteered | Qualifies without interrogating |
+| Unknown questions | One standard verification line plus a sales team confirmation offer | Consistent and honest |
+| Testing | Four rounds: static, voice call, booking call, regression; acceptance ≥85 percent with zero critical failures | Fits a $5 Bolna credit budget |
 | Senior expert or customer care | Callback promise, not a live transfer | Matches the example in the brief and needs no transfer number |
 
 ## 4. Assumptions
