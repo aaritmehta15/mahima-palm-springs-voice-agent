@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 1 (Round 2).
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 2 (Round 2; Round 3 attempt 1).
 
 ## 1. Run summary
 
@@ -11,7 +11,8 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 | 1. Static desk check | v0.3 (before fixes) | 2026-11-17 | Core T01–T15 | 12 STATIC PASS, 3 defects found (D1–D3) |
 | 1. Static re-check | v0.3 (after fixes) | 2026-11-17 | T04, T08, T09 | 3 STATIC PASS |
 | 2. Voice check | v0.4.1 | 2026-11-17 | 1 live call (119 s, $0.120), execution `6d1ec…` | **LIVE PASS, 89 of 100**, no critical failure; 3 defects (D4–D6) fixed in v0.5 |
-| 3. Booking end to end | — | — | T01, T10 live | NOT RUN |
+| 3. Booking end to end, attempt 1 | v0.5 | 2026-11-17 | 1 live call, execution `ec16fc4c…` | **LIVE FAIL**: wrong dates (D7), possible unverified slot (D9, logs pending), blank variables (D4); booking honesty held: no false confirmation, closed as pending. Not usable as the submission recording |
+| 3. Booking end to end, attempt 2 | v0.6 | — | — | NOT RUN |
 | 4. Regression | — | — | Critical cases after fixes | NOT RUN |
 
 ## 2. Core scenarios (T01–T15)
@@ -40,7 +41,11 @@ Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_ru
 |---|---|---|---|---|
 | D1 | Round 1, T08 and T09 | FAQ answers for unverified topics (amenities, discount, RERA, loan, total price, returns, construction) deferred to the senior expert but did not offer sales team confirmation or record the question, so they were inconsistent with the standard fact verification line | FAQ rules block: FAQs 5, 7, 8, 9, 10, 15 and 16 now add the question to `[unknown_questions]` and offer sales team confirmation (v0.3) | STATIC PASS |
 | D2 | Round 1, T04 | No route for "yes it's me, but not interested" during the greeting | Greeting instructions route it to S4 Branch D and an opt-out to the opt-out handler (v0.3) | STATIC PASS |
-| D4 | Round 2 live | Greeting said "क्या मेरी बात  जी से": `customer_name` was empty on the dashboard test call | Set default values in Bolna Variables (configuration fix) | Pending re-test |
+| D7 | Round 3 attempt 1 | Customer said "Saturday" on Tue 17 Nov 2026; agent said "शनिवार, नवंबर सत्रह" and checked the 17th (today, after hours, so no slots). "Monday" became "नवंबर उन्नीस" (actually Thursday; Monday is the 23rd) | v0.6: explicit day-counting procedure from `{current_date}`, never today; spoken form "शनिवार, इक्कीस नवंबर"; customer correction triggers a re-check. Also verify what `{current_date}` contains in the raw logs | Pending live re-test |
+| D8 | Round 3 attempt 1 | `{customer_email}` was blank; the agent still read the confirmation line, called the booking tool, then asked for a spelled email (transcribed as "eight a", "a a r i") | v0.6: blank email → straight to Branch D, never book without a confirmed email; Branch D line spoken exactly, never improvised | Pending; the root cause is D4 |
+| D9 | Round 3 attempt 1 | "Monday gyarah baje" → "slot available hai" with no pre-tool message, so the availability tool may not have been called | v0.6: every new day needs a fresh `check_availability_of_slots` call; a customer-suggested time is never accepted unchecked. Raw logs requested to confirm | Pending logs |
+| D10 | Round 3 attempt 1 | Agent said "कृपया" twice and repeated a line | v0.6: banned formal words listed in Devanagari | Pending |
+| D4 | Round 2 live; repeated in Round 3 | Greeting said "क्या मेरी बात  जी से": `customer_name` (and in Round 3, `customer_email`) empty on dashboard test calls | Configuration: variable defaults in Bolna, or pass `user_data` through an API call | **Open, blocking Round 3** |
 | D5 | Round 2 live | The transcriber heard "Aarit" as "आरेन्द्र", and the agent addressed the customer by that misheard name | v0.5: address only by `{customer_name}`, otherwise "आप"; never use a name heard on the call | STATIC PASS; live re-test pending |
 | D6 | Round 2 live | "Teen BHK, rate kya hai?" got rate + sizes + floor plan + "teen BHK, sahi hai?" (4 sentences, re-confirmation) | v0.5: answer only what was asked, in one sentence; never re-confirm what the customer said | STATIC PASS; live re-test pending |
 | D3 | Round 1, T05 | The S4 Q1 instruction said a permission check happens at S5 Q1, but S5 Q1 has no permission check | The question is now treated as permission, and the call follows Pitch Routing (v0.3) | STATIC PASS |
@@ -61,3 +66,16 @@ The other 26 cases in [test_cases.csv](test_cases.csv) are documented scenarios.
 | **Weighted** | | **88.75** | **PASS** (≥ 85, zero critical failures) |
 
 Observations: the agent ended the call itself after the closing ("Agent ended call"). Duration 119 s; cost $0.120. The tester reported no pronunciation problems other than the name issue.
+
+## 6. Round 3 attempt 1 notes (execution `ec16fc4c…`, prompt v0.5)
+
+| Check | Result |
+|---|---|
+| Total price question (TC-09) | **LIVE PASS**: no figure, cost-sheet deferral, expert offered |
+| Pitch flow | PASS: one fact per turn, no repeated BHK confirmation (the D6 fix worked) |
+| Date resolution | **FAIL**: D7 |
+| Slots only from the tool | **UNVERIFIED**: D9, raw logs requested |
+| No false booking confirmation (T12 behaviour) | **LIVE PASS**: booking failed, and the agent closed with the pending line (S7 B) |
+| Cal.com | No booking created, which is consistent with the transcript |
+
+Overall: **FAIL** (critical date errors). The booking-honesty guardrail held under a real failure.

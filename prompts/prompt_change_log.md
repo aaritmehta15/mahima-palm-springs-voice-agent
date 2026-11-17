@@ -2,6 +2,17 @@
 
 Each entry records what changed in [system_prompt.md](system_prompt.md), why, and which evidence (test case ID or call execution) triggered it. Entries without real test evidence are marked *design-time*.
 
+## v0.6: Fixes from Round 3 attempt 1 (2026-11-17)
+
+Trigger: execution `ec16fc4c…` (see [tests/test_results.md](../tests/test_results.md), D7 to D10).
+
+| Defect | Change |
+|---|---|
+| D7 wrong weekday-to-date conversion | S6 Q1: step-by-step day counting from `{current_date}`; never today; within seven days; re-check if the customer corrects the date. Spoken form: weekday + day + month, no year |
+| D9 possibly unchecked slot | S6 rules: every new day needs a fresh availability call; a time is available only if it appears in a tool result from this call |
+| D8 blank email | S6 Q4: blank or invalid `{customer_email}` → skip the line, go to Branch D; rules: never book without a confirmed email; Branch D spoken exactly |
+| D10 formal words | `# Language`: banned words listed in Devanagari |
+
 ## v0.5: Fixes from the first live call (2026-11-17)
 
 Trigger: Round 2 live call, execution `6d1ec…` (see [tests/test_results.md](../tests/test_results.md), D4 to D6).
