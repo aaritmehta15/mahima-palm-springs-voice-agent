@@ -144,7 +144,7 @@ Re-check: the automated lint was re-run after these edits (see below). The conve
 
 ## v0.1: Initial design (design-time, not yet tested)
 
-**Basis:** the assignment brief, the confirmed design decisions in [assignment/requirements.md](../assignment/requirements.md), and patterns from the reference repositories.
+**Basis:** the assignment brief, the confirmed design decisions, and patterns from the reference repositories.
 
 ### Structure
 - Nine sections. The five script stages required by the brief (Greeting, Introduction and good-time check, Main Pitch, Site Visit Booking, Conclusion) are Sections 3 to 7. The four extra sections the brief requires (AI Agent Background, Global Rules, Guardrails, FAQs) are Sections 1, 2, 8 and 9.

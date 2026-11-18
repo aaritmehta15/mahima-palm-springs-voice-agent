@@ -1,6 +1,6 @@
 # Bolna Agent Setup
 
-Step-by-step configuration of the Mahima Palm Springs agent in **Bolna Agent Studio** (dashboard), with no custom code. Settings come from Bolna's official `create-agent` skill guidance in [.agents/skills/create-agent/](../.agents/skills/create-agent/).
+Step-by-step configuration of the Mahima Palm Springs agent in **Bolna Agent Studio** (dashboard), with no custom code. Settings come from Bolna's official `create-agent` skill guidance in [.agents/skills/create-agent/](https://github.com/bolna-ai/skills/tree/main/create-agent/).
 
 > **Safety:** creating the agent and running web tests is free or low-cost. **Do not** buy phone numbers, top up credits or place phone calls without the account owner's explicit approval. API keys are entered only into the Bolna and Cal.com dashboards and are never stored in this repository.
 
@@ -126,16 +126,15 @@ Copy the results into [evidence/](../evidence/) using the redaction rules there.
 
 ## 10. Compliance note
 
-Commercial outbound calls to Indian numbers require DLT-registered numbers: 140-series through Vobiz for promotional calls (see [.agents/references/india-compliance.md](../.agents/references/india-compliance.md)). This demo calls only the developer's own verified phone. **Do not upload a list of Facebook leads or start a campaign.** A trial demonstration is not authorisation to run a production campaign. A production rollout would need DLT registration, consent records from the Facebook lead form, and a do-not-call list fed by the `Opted Out` extraction.
+Commercial outbound calls to Indian numbers require DLT-registered numbers: 140-series through Vobiz for promotional calls (see [.agents/references/india-compliance.md](https://github.com/bolna-ai/skills/tree/main/references/india-compliance.md)). This demo calls only the developer's own verified phone. **Do not upload a list of Facebook leads or start a campaign.** A trial demonstration is not authorisation to run a production campaign. A production rollout would need DLT registration, consent records from the Facebook lead form, and a do-not-call list fed by the `Opted Out` extraction.
 
 ## 11. Configuration record (fill in after setup)
 
 | Item | Value used |
 |---|---|
-| Bolna agent ID (first 8 characters) | PENDING |
-| LLM model | PENDING |
-| STT model and language | PENDING |
-| TTS model and voice | PENDING |
-| Calendar function names | PENDING |
-| Fallbacks used | PENDING |
-| Screenshots | [evidence/screenshots/](../evidence/screenshots/) |
+| Bolna agent ID (first 8 characters) | `aa66c437` |
+| LLM model | Azure `gpt-4.1-mini` cluster, 200 tokens, temperature 0.2 |
+| STT model and language | Deepgram `nova-3`, Hindi, with project keywords |
+| TTS model and voice | Sarvam `bulbul:v3`, voice Priya |
+| Calendar function names | `check_availability_of_slots_7950914`, `book_appointment_7950914` |
+| Fallbacks used | None |

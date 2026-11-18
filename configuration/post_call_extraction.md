@@ -46,7 +46,7 @@ Use the **Test** button on the Extractions tab with a saved transcript ([tests/t
 
 | Transcript | Call Outcome | Site Visit Status | Opt-out | Callback Day / Time |
 |---|---|---|---|---|
-| `call4_6b56f180` (submission) | `interested` | `confirmed` | `false` | `none` / `not_specified` |
+| `call7_27803950` (v1.0 submission) | `interested` | `confirmed` | `false` | `none` / `not_specified` |
 | `call1_6d1ec` (busy, "kal isi time") | `follow_up` | `not_requested` | `false` | `tomorrow` / `same_time` |
 | `call2_ec16fc4c` (booking failed) | `interested` | `pending_confirmation` | `false` | `none` / `not_specified` |
 

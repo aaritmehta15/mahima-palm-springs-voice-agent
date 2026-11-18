@@ -32,3 +32,6 @@ desktop.ini
 
 # Personal run files (phone, email): never commit
 local/
+
+# Bolna reference skills used while building (third-party, not part of the submission)
+.agents/

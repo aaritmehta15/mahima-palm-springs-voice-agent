@@ -66,7 +66,7 @@ assistant: आपका स्वागत है, आपका दिन अच
 
 Bolna's tool panel does not list tool calls, so the evidence is downstream state:
 1. The 10:00 slot was correctly reported as taken; an earlier test booking occupies it in Cal.com.
-2. **Cal.com shows the new booking Confirmed** for Sat 21 Nov 2026, 9:00 to 9:30 IST, and the confirmation email arrived (screenshots in [screenshots/](screenshots/)).
+2. **Cal.com shows the new booking Confirmed** for Sat 21 Nov 2026, 9:00 to 9:30 IST, and the confirmation email arrived.
 
 ## Redaction applied
 

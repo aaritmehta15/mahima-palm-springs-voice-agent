@@ -120,7 +120,7 @@ The prompt tells the model to **look the date up**, never compute it. Counting i
 | Devanagari, not Roman Hindi | Bolna and Sarvam pronunciation guidance | Natural TTS in all calls |
 | Callback, not live transfer | Matches the brief's example; no extra number | — |
 
-## 6. Roman-transliterated dialogue (reading copy, matches v0.9)
+## 6. Roman-transliterated dialogue (reading copy, matches v1.0)
 
 The runtime prompt uses Devanagari. This copy is for readers and is **not** pasted into Bolna.
 

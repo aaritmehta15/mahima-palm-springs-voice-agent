@@ -11,7 +11,7 @@
 | Duration | 228 s |
 | Total call cost | $0.24 |
 | Test cases demonstrated | TC-01, TC-09 (total price), TC-42 (weekday only), TC-43 (time of day), TC-45 (taken time), TC-49 (booking only after the combined read-back) |
-| Booking outcome in Cal.com demo calendar | **Confirmed**: Sat 21 Nov 2026, 9:00 to 9:30 IST (screenshot in `screenshots/`) |
+| Booking outcome in Cal.com demo calendar | **Confirmed**: Sat 21 Nov 2026, 9:00 to 9:30 IST |
 | Transcript | [transcript.md](transcript.md) |
 
 ## Notes for the reviewer

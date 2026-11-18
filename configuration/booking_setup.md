@@ -1,6 +1,6 @@
 # Site Visit Booking Setup (Cal.com + Bolna)
 
-The agent checks **real** availability and creates **real** bookings using Bolna's built-in Cal.com tools. Bolna makes the Cal.com HTTP calls itself, so no server or code is needed. Reference: [.agents/skills/setup-tools/references/cal-com.md](../.agents/skills/setup-tools/references/cal-com.md).
+The agent checks **real** availability and creates **real** bookings using Bolna's built-in Cal.com tools. Bolna makes the Cal.com HTTP calls itself, so no server or code is needed. Reference: [.agents/skills/setup-tools/references/cal-com.md](https://github.com/bolna-ai/skills/tree/main/setup-tools/references/cal-com.md).
 
 > **This is a demonstration calendar.** It is a Cal.com account controlled by the developer. Its availability is **not** the real Mahima Palm Springs site office schedule, and the agent's prompt is forbidden from claiming that it is.
 
