@@ -36,7 +36,11 @@ if (-not $apiKey) {
   $env:BOLNA_API_KEY = $apiKey   # kept only for this PowerShell session, so a scheduled callback needs no re-entry
 }
 
-$exec = Invoke-RestMethod -Uri "https://api.bolna.ai/executions/$ExecutionId" -Headers @{ Authorization = "Bearer $apiKey" }
+# Windows PowerShell 5.1 decodes responses without a charset as Latin-1, which garbles Devanagari.
+# Read the raw bytes and decode them as UTF-8 explicitly; also print UTF-8 to the console.
+[Console]::OutputEncoding = [Text.Encoding]::UTF8
+$resp = Invoke-WebRequest -UseBasicParsing -Uri "https://api.bolna.ai/executions/$ExecutionId" -Headers @{ Authorization = "Bearer $apiKey" }
+$exec = [Text.Encoding]::UTF8.GetString($resp.RawContentStream.ToArray()) | ConvertFrom-Json
 
 # 1. Remove credentials before saving (tool configs carry the Cal.com key in their headers)
 if ($exec.usage_breakdown -and $exec.usage_breakdown.api_tools) { $exec.usage_breakdown.PSObject.Properties.Remove("api_tools") }

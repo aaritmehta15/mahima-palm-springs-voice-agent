@@ -156,7 +156,12 @@ def main(argv):
           "| Transcript | Critical | Major | Minor | Verdict |", "|---|---|---|---|---|"]
     details = []
     for f in files:
-        turns = parse(load(f))
+        raw = load(f)
+        if "à¤" in raw:  # UTF-8 Devanagari decoded as Latin-1: the checks would silently pass on garbage
+            print(f"\n{f.name}: ERROR  transcript is mis-encoded (Latin-1 mojibake); re-fetch it as UTF-8")
+            any_critical = True
+            continue
+        turns = parse(raw)
         flags = check(turns)
         c = sum(1 for s, *_ in flags if s == "CRITICAL")
         m = sum(1 for s, *_ in flags if s == "MAJOR")
