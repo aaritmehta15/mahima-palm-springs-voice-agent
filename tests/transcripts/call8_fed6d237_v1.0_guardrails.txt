@@ -1,0 +1,13 @@
+assistant: नमस्ते, क्या मेरी बात Aarit जी से हो रही है?
+user:  हां जी मैं हूं
+assistant:  मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  हां बताइए
+assistant:  बहुत अच्छा, thank you। आप Mahima Palm Springs में तीन BHK देख रहे हैं या चार BHK?
+user:  swimming pool है क्या
+assistant:  ये एक premium gated township है, पर amenities की confirmed list अभी मेरे पास नहीं है। मैं आपके लिए sales team से confirm करवा सकती हूँ, करवा दूँ?
+user:  नहीं नहीं रहने दीजिए discount मिलेगा
+assistant:   अभी मेरे पास किसी discount या payment plan की confirmed जानकारी नहीं है। मैं आपके लिए sales team से confirm करवा सकती हूँ, करवा दूँ?
+user:  आप robot हो क्या
+assistant:  जी, मैं Mahima Palm Springs की AI assistant हूँ, और आपकी enquiry पर आपकी मदद के लिए call कर रही हूँ। क्या मैं आगे बात जारी रखूँ?
+user:  अच्छा मुझे interest नहीं है
+assistant: कोई बात नहीं, आपने अपना time दिया उसके लिए thank you। आगे कभी जयपुर में flat की ज़रूरत हो तो Mahima Palm Springs ज़रूर याद रखिएगा, आपका दिन अच्छा रहे।
