@@ -8,6 +8,7 @@ Built on **Bolna** with no custom code. This repository is the submission packag
 
 | What | Where |
 |---|---|
+| **Project and test report (start here)** | [PROJECT_AND_TEST_REPORT.md](PROJECT_AND_TEST_REPORT.md) |
 | **Design choices, prompt style and learnings** | [DESIGN_AND_LEARNINGS.md](DESIGN_AND_LEARNINGS.md) |
 | **The prompt used** | [prompts/system_prompt.md](prompts/system_prompt.md) |
 | How a lead triggers a call (API + `user_data`, do-not-call check) | [scripts/place_call.ps1](scripts/place_call.ps1) |
