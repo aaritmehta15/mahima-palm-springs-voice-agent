@@ -53,6 +53,10 @@ Write-Host ""
 Write-Host "=== $ExecutionId ===" -ForegroundColor Cyan
 Write-Host ("status: {0} | ended: {1} | duration: {2}s | cost: `${3}" -f $exec.status, $exec.termination_reason, $exec.conversation_duration, $cost)
 Write-Host ""
+if ($exec.status -match "^(scheduled|queued|initiated|ringing|in-progress|rescheduled)$") {
+  Write-Host "This call has not finished yet (status: $($exec.status)). Run this again after it ends." -ForegroundColor Yellow
+  exit 0
+}
 Write-Host $exec.transcript
 
 # 2. Find a disposition anywhere inside extracted_data by its name
@@ -86,6 +90,28 @@ if ($optOut -match "^(true|yes)$") {
   $existing = @(); if (Test-Path $DncFile) { $existing = Get-Content $DncFile }
   if ($existing -notcontains $phone) { Add-Content -Path $DncFile -Value $phone }
   Write-Host "OPT-OUT: $phone added to the do-not-call list. place_call.ps1 will refuse this number." -ForegroundColor Red
+
+  # A callback scheduled earlier must not ring after an opt-out: find pending scheduled calls and offer to stop them.
+  $log = Join-Path $root "local\call_log.tsv"
+  if (Test-Path $log) {
+    $pending = Get-Content $log | ForEach-Object {
+      $c = $_ -split "`t"
+      if ($c.Count -ge 5 -and $c[4]) {
+        $at = [DateTimeOffset]::MinValue
+        if ([DateTimeOffset]::TryParse($c[4], [Globalization.CultureInfo]::InvariantCulture, [Globalization.DateTimeStyles]::None, [ref]$at) -and $at -gt [DateTimeOffset]::Now) {
+          [pscustomobject]@{ Id = $c[1]; At = $c[4] }
+        }
+      }
+    }
+    foreach ($p in @($pending)) {
+      if (-not $p) { continue }
+      $ans = Read-Host "Scheduled call $($p.Id) at $($p.At) is still pending. Stop it now? (y/n)"
+      if ($ans -eq "y") {
+        $r = Invoke-RestMethod -Method Post -Uri "https://api.bolna.ai/call/$($p.Id)/stop" -Headers @{ Authorization = "Bearer $apiKey" }
+        Write-Host "Stopped $($p.Id):" ($r | ConvertTo-Json -Compress) -ForegroundColor Red
+      }
+    }
+  }
 }
 # 3b. Senior expert callback = a HUMAN handover (prompt S7 Branch D). Log it for the sales team; never auto-schedule an AI call.
 elseif ($exec.transcript -match ('senior expert ' + [char]0x0906 + [char]0x092A + [char]0x0915 + [char]0x094B + ' ' + [char]0x0915 + [char]0x0932)) {   # 'senior expert aapko kal' (S7 Branch D), ASCII-only for PowerShell 5.1

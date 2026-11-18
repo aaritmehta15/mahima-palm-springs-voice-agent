@@ -162,6 +162,10 @@ def main(argv):
             any_critical = True
             continue
         turns = parse(raw)
+        if not turns:  # an empty transcript proves nothing; never report it as a pass
+            print(f"\n{f.name}: NO TRANSCRIPT  (the call has not happened yet or has no turns)")
+            md.append(f"| `{f.name}` | - | - | - | **NO TRANSCRIPT** |")
+            continue
         flags = check(turns)
         c = sum(1 for s, *_ in flags if s == "CRITICAL")
         m = sum(1 for s, *_ in flags if s == "MAJOR")
