@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 5. Total live spend: $1.08.
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 7. Total live spend: $1.47.
 
 ## 1. Run summary
 
@@ -142,3 +142,14 @@ Run against the five real calls ([transcripts/](transcripts/)), it independently
 What it **cannot** see: tool calls. The invented slots in call `ec16fc4c` (D9) were only provable from the execution JSON, so the checker supplements tool-log review and the Cal.com booking check; it does not replace them.
 
 Self-test: every scripted line in prompt v1.0, filled with sample values, passes all style rules (0 major flags).
+
+## 11. Round 5: v1.0 live verification
+
+| Execution | Test | Result | Notes |
+|---|---|---|---|
+| `748687e7…` | Call A (attempt) | Stopped by the tester | STT transcribed "teen BHK" as "ten bhk"; the agent re-asked the BHK once, which is correct handling of an unclear answer. "teen BHK, chaar BHK, 3 BHK, 4 BHK" added to the Bolna transcriber keywords. $0.15 |
+| `27803950…` | **Call A: booking (submission recording)** | **LIVE PASS**, checker 0 critical 0 major | Name greeting; "square feet"; "पाँच हज़ार पाँच सौ"; total-price deferral; "Saturday" → शनिवार, इक्कीस नवंबर (**D7 verified**); slots across the day with the part of day (**D15, D17 verified**); 10:00 correctly reported taken (**Branch F verified**); one combined read-back before booking (**D18 verified**); real Cal.com booking, Sat 21 Nov 9:00 IST. 228 s, $0.24 |
+
+Rubric for `27803950`: Factual 100, Flow 100, Hinglish 95, Tools 100, Naturalness 95 → **99, PASS**. Remaining observation: after the closing the customer said "धन्यवाद" and the agent replied once ("आपका स्वागत है…") before ending, which is natural and was not changed.
+
+Defects D14 to D19: all re-tested in `27803950` except D16 Branch E (requested time **free**), which is pending.
