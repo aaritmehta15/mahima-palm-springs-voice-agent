@@ -17,11 +17,14 @@
 #>
 param(
   [Parameter(Mandatory = $true)] [string] $ExecutionId,
-  [string] $DncFile = (Join-Path $PSScriptRoot "..\local\do_not_call.txt"),
+  [string] $DncFile = "",
   [switch] $NoSchedule
 )
+# Windows PowerShell 5.1 does not set $PSScriptRoot inside param defaults, so resolve it here
+$here = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+if (-not $DncFile) { $DncFile = Join-Path $here "..\local\do_not_call.txt" }
 
-$root = Join-Path $PSScriptRoot ".."
+$root = Join-Path $here ".."
 $outDir = Join-Path $root "local\calls"
 if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
 
@@ -95,7 +98,7 @@ elseif ($cbDay -and $cbDay -notmatch "^(none|not_discussed)$" -and -not $NoSched
   if ($answer -eq "y") {
     $name  = $exec.context_details.recipient_data.customer_name
     $email = $exec.context_details.recipient_data.customer_email
-    & (Join-Path $PSScriptRoot "place_call.ps1") -AgentId $exec.agent_id -Phone $phone -Name $name -Email $email `
+    & (Join-Path $here "place_call.ps1") -AgentId $exec.agent_id -Phone $phone -Name $name -Email $email `
         -ScheduleAt $iso -CallReason "callback" -DncFile $DncFile -Label "auto-callback for $ExecutionId"
   } else { Write-Host "Not scheduled." }
 }

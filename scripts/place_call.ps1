@@ -32,9 +32,12 @@ param(
   [string] $Email = "",
   [string] $ScheduleAt = "",          # ISO 8601 with offset, e.g. 2026-11-19T17:00:00+05:30; empty = call now
   [string] $CallReason = "",          # "callback" or empty
-  [string] $DncFile = (Join-Path $PSScriptRoot "..\local\do_not_call.txt"),
+  [string] $DncFile = "",             # default: local\do_not_call.txt in the repo
   [string] $Label = ""                # free-text test label, written to the local call log
 )
+# Windows PowerShell 5.1 does not set $PSScriptRoot inside param defaults, so resolve it here
+$here = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+if (-not $DncFile) { $DncFile = Join-Path $here "..\local\do_not_call.txt" }
 
 # 1. Do-not-call check (opt-outs are enforced here, before any call is placed)
 if (Test-Path $DncFile) {
@@ -92,7 +95,7 @@ $apiKey = $null
 Write-Host "Queued:" ($response | ConvertTo-Json -Compress)
 
 # 5. Local call log (gitignored), so every test call can be traced to its execution_id
-$logDir = Join-Path $PSScriptRoot "..\local"
+$logDir = Join-Path $here "..\local"
 if (-not (Test-Path $logDir)) { New-Item -ItemType Directory -Path $logDir | Out-Null }
 $line = "{0}`t{1}`t{2}`t{3}`t{4}" -f (Get-Date -Format s), $response.execution_id, $Label, $CallReason, $ScheduleAt
 Add-Content -Path (Join-Path $logDir "call_log.tsv") -Value $line
