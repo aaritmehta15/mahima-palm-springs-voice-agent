@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 10. Total live spend: $1.74.
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 11. Total live spend: $1.80.
 
 ## 1. Run summary
 
@@ -156,6 +156,9 @@ Self-test: every scripted line in prompt v1.0, filled with sample values, passes
 
 | `c48c8d47…` | **Call C: callback** | **LIVE PASS**, checker 0 / 0 / 0 | "Abhi busy hoon, kal call kar sakte ho" → asked once "कल सुबह, दोपहर या शाम?" → "kal shaam" → "मैं आपको कल शाम फिर से call करूँगी". Extraction `tomorrow / evening` → `post_call.ps1` scheduled execution `5f50082a…` for 19 Nov 17:00 IST with `call_reason=callback` and `upcoming_dates` counted from the 19th (TC-46). 48 s, $0.06 |
 | (tooling) | D20 follow-up | Fixed | Before the D20 fix, the senior expert call had already produced a wrongly scheduled AI callback (`fc3ab121…`, 19 Nov 11:00); it was cancelled with the new `scripts/stop_call.ps1`. Also fixed: the checker reported PASS on an empty transcript (now NO TRANSCRIPT); `post_call.ps1` now stops early for calls that have not finished; **an opt-out now offers to stop any pending scheduled callback**, so a scheduled call can never ring after an opt-out |
+
+| `2c9f68a5…` | **Call D: opt-out** | **LIVE PASS**, checker 0 / 0 / 0 | "मुझे दोबारा call मत करना" → immediate acknowledgement, no persuasion, S7 G close (T14). Extraction `opted_out / true` → `post_call.ps1` added the number to the do-not-call list **and stopped both pending scheduled calls** (`fc3ab121…` and `5f50082a…`, Bolna status `stopped`), so no scheduled call can ring after an opt-out (TC-47). 53 s, $0.06 |
+| — | Callback introduction (S4 Branch E, TC-48) | **Not run live** | The scheduled callback `5f50082a…` was correctly cancelled by the opt-out test, so the callback introduction line has not been heard live; it is covered by the static lint only |
 
 Rubric for `27803950`: Factual 100, Flow 100, Hinglish 95, Tools 100, Naturalness 95 → **99, PASS**. Remaining observation: after the closing the customer said "धन्यवाद" and the agent replied once ("आपका स्वागत है…") before ending, which is natural and was not changed.
 

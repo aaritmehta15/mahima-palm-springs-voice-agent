@@ -1,0 +1,7 @@
+assistant: नमस्ते, क्या मेरी बात Aarit जी से हो रही है?
+user:  हां
+assistant:  मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  अभी मैं busy हूं कल call कर सकते हो
+assistant:  कोई बात नहीं, आपको कब call करना ठीक रहेगा, कल सुबह, दोपहर या शाम?
+user:  कल शाम को
+assistant: ठीक है, मैं आपको कल शाम फिर से call करूँगी। आपके time के लिए thank you, आपका दिन अच्छा रहे।

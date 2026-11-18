@@ -1,0 +1,7 @@
+assistant: नमस्ते, क्या मेरी बात Aarit जी से हो रही है?
+user:  हां मैं बोल रहा हूं
+assistant:  मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  मुझे दोबारा call मत करना
+assistant:  ठीक है, मैं आपकी request अभी note कर रही हूँ, Mahima Palm Springs की तरफ़ से इस बारे में आपको दोबारा call नहीं किया जाएगा। परेशानी के लिए माफ़ी चाहती हूँ, आपका दिन अच्छा रहे।
+user:  ठीक है
+assistant:  आपका दिन अच्छा रहे।
