@@ -87,7 +87,13 @@ if ($optOut -match "^(true|yes)$") {
   if ($existing -notcontains $phone) { Add-Content -Path $DncFile -Value $phone }
   Write-Host "OPT-OUT: $phone added to the do-not-call list. place_call.ps1 will refuse this number." -ForegroundColor Red
 }
-# 3b. Callback -> schedule a follow-up call
+# 3b. Senior expert callback = a HUMAN handover (prompt S7 Branch D). Log it for the sales team; never auto-schedule an AI call.
+elseif ($exec.transcript -match ('senior expert ' + [char]0x0906 + [char]0x092A + [char]0x0915 + [char]0x094B + ' ' + [char]0x0915 + [char]0x0932)) {   # 'senior expert aapko kal' (S7 Branch D), ASCII-only for PowerShell 5.1
+  $handoff = Join-Path $root "local\expert_callbacks.tsv"
+  Add-Content -Path $handoff -Value ("{0}`t{1}`t{2}`ttomorrow 10:00-17:00 IST" -f (Get-Date -Format s), $ExecutionId, $phone)
+  Write-Host "SENIOR EXPERT CALLBACK: human handover logged to local\expert_callbacks.tsv (tomorrow 10 AM to 5 PM). No AI call scheduled." -ForegroundColor Yellow
+}
+# 3c. Customer asked Neha to call back later -> schedule a follow-up AI call
 elseif ($cbDay -and $cbDay -notmatch "^(none|not_discussed)$" -and -not $NoSchedule) {
   $ist = [TimeZoneInfo]::FindSystemTimeZoneById("India Standard Time")
   $callUtc = [DateTime]::SpecifyKind([DateTime]::Parse($exec.initiated_at, [Globalization.CultureInfo]::InvariantCulture), [DateTimeKind]::Utc)

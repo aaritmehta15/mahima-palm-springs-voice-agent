@@ -1,0 +1,9 @@
+assistant: नमस्ते, क्या मेरी बात Aarit जी से हो रही है?
+user:  हां जी मैं ही हूं
+assistant:  मैं नेहा, Mahima Palm Springs की AI assistant बोल रही हूँ। आपने हाल ही में Facebook पर हमारे टोंक रोड, जयपुर वाले project के बारे में enquiry की थी, क्या अभी दो मिनट बात करना ठीक रहेगा?
+user:  हां बताइए
+assistant:  बहुत अच्छा, thank you। आप Mahima Palm Springs में तीन BHK देख रहे हैं या चार BHK?
+user:  क्या मैं किसी senior से बात कर सकती हूं
+assistant:  बिल्कुल, क्या मैं हमारे senior expert से आपको callback करवा दूँ?
+user:  हां जी
+assistant: ज़रूर, मैंने आपकी request note कर ली है, हमारे senior expert आपको कल सुबह दस बजे से शाम पाँच बजे के बीच call करेंगे। आपके time के लिए thank you, आपका दिन अच्छा रहे।

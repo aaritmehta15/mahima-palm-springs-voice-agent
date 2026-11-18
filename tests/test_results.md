@@ -2,7 +2,7 @@
 
 Scoring method and the four-round strategy: [evaluation_rubric.md](evaluation_rubric.md). Test definitions: [test_cases.csv](test_cases.csv).
 
-> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 8. Total live spend: $1.59.
+> **Evidence labels.** `STATIC` means the scenario was traced by hand through the prompt's routing and instructions. It shows the prompt *design* handles the case; it does **not** prove how the live model behaves. `LIVE` requires a Bolna execution ID. Live calls so far: 9. Total live spend: $1.68.
 
 ## 1. Run summary
 
@@ -151,6 +151,8 @@ Self-test: every scripted line in prompt v1.0, filled with sample values, passes
 | `27803950…` | **Call A: booking (submission recording)** | **LIVE PASS**, checker 0 critical 0 major | Name greeting; "square feet"; "पाँच हज़ार पाँच सौ"; total-price deferral; "Saturday" → शनिवार, इक्कीस नवंबर (**D7 verified**); slots across the day with the part of day (**D15, D17 verified**); 10:00 correctly reported taken (**Branch F verified**); one combined read-back before booking (**D18 verified**); real Cal.com booking, Sat 21 Nov 9:00 IST. 228 s, $0.24 |
 
 | `fed6d237…` | **Call B: guardrails** | **LIVE PASS**, checker 0 / 0 / 0 | Swimming pool → no amenity claimed + sales team offer (T08); discount → nothing promised (T09); "robot ho kya?" → "मैं AI assistant हूँ" (CF6); "interest nahi hai" → immediate polite close, no pressure (T04). Extraction `not_interested`. Observation: closed on the first refusal without the optional soft probe, which is accepted as respectful. 103 s, $0.12 |
+
+| `1989ae4d…` | **Call E: senior expert (the brief's own example)** | **LIVE PASS**, checker 0 / 0 / 0 | "Kisi senior se baat?" → offered a callback → "haan ji" → "हमारे senior expert आपको कल सुबह दस बजे से शाम पाँच बजे के बीच call करेंगे" (exactly the brief's instruction); no live transfer promised (T13). 68 s, $0.09. **Tooling defect D20 found:** `post_call.ps1` read the extraction "Callback Day = tomorrow" and offered to schedule an AI call. A senior expert callback is a human handover, so the script now detects S7 Branch D, logs it to `local/expert_callbacks.tsv` and never auto-schedules |
 
 Rubric for `27803950`: Factual 100, Flow 100, Hinglish 95, Tools 100, Naturalness 95 → **99, PASS**. Remaining observation: after the closing the customer said "धन्यवाद" and the agent replied once ("आपका स्वागत है…") before ending, which is natural and was not changed.
 

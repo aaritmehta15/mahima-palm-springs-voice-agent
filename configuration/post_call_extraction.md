@@ -36,6 +36,10 @@ Configure in Bolna: Agent → **Extractions** → **New Category** `Lead Outcome
 
 It then calls `POST /call` with `scheduled_at` and `call_reason=callback`, **after asking the operator to confirm**, because a scheduled call spends credit. The scheduled call opens with the callback introduction (prompt S4 Branch E).
 
+## Senior expert callbacks are not auto-scheduled
+
+In live call `1989ae4d` the customer asked for a senior expert, and the `Callback Day` extraction returned `tomorrow`. That callback belongs to a **human**, so `post_call.ps1` detects the S7 Branch D closing ("senior expert आपको कल..."), logs a handover row to `local/expert_callbacks.tsv` (tomorrow 10 AM to 5 PM IST) and does **not** schedule an AI call. Only "call me later" requests made to Neha (busy handler → S7 Branch C) become scheduled AI calls.
+
 ## Testing extractions without a phone call
 
 Use the **Test** button on the Extractions tab with a saved transcript ([tests/transcripts/](../tests/transcripts/)).
